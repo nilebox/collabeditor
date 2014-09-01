@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE tiles-definitions PUBLIC
+       "-//Apache Software Foundation//DTD Tiles Configuration 2.1//EN"
+       "http://tiles.apache.org/dtds/tiles-config_2_1.dtd">
+
+<tiles-definitions>
+	<definition name="base-template" template="/WEB-INF/layout/base-template.jsp">
+		<put-attribute name="title" value="Default title" />
+		<put-attribute name="content" value="" />
+	</definition>
+	<definition name="empty-template" template="/WEB-INF/layout/empty-template.jsp">
+		<!-- <put-attribute name="title" value="TicketRain Reports System Login" /> -->
+		<put-attribute name="content" value="" />
+	</definition>
+
+	<definition name="login" extends="empty-template">
+		<put-attribute name="content" value="/WEB-INF/views/login.jsp" />
+	</definition>
+	
+	<definition name="admin/*" extends="base-template">
+		<put-attribute name="content" value="/WEB-INF/views/admin/{1}.jsp" />
+	</definition>
+	
+	<definition name="*" extends="base-template">
+		<put-attribute name="content" value="/WEB-INF/views/{1}.jsp" />
+	</definition>
+</tiles-definitions>

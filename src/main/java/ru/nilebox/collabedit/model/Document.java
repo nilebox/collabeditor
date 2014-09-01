@@ -13,7 +13,7 @@ import javax.persistence.SequenceGenerator;
  *
  * @author nile
  */
-@Entity(name="document")
+@Entity(name="collab_doc")
 public class Document implements Serializable {
 	private static final long serialVersionUID = 7106040624441944871L;
 	
