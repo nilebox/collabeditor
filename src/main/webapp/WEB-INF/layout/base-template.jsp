@@ -12,18 +12,12 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<script src="${root}/resources/js/moment.min.js"></script>
 <script src="${root}/resources/js/jquery-1.8.0-min.js"></script>
-<script src="${root}/resources/js/jquery-jtemplates.js"></script>
 <title>CollabEdit</title>
 <link href="${root}/resources/css/bootstrap.css" rel="stylesheet">
-<link href="${root}/resources/css/bootstrap-datepicker.css"
-	rel="stylesheet">
 <link href="${root}/resources/css/main.css" rel="stylesheet">
 <!-- Custom styles for this template -->
-<link href="${root}/resources/css/offcanvas.css" rel="stylesheet">
-<link href="${root}/resources/css/select2.css" rel="stylesheet"/>
-    <script src="${root}/resources/js/select2.js"></script>
+<link href="${root}/resources/css/bootstrap-editable.css" rel="stylesheet">
 <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
 <!--[if lt IE 9]>
       <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
@@ -80,7 +74,7 @@
 	</div>
 	<!-- /.navbar -->
 
-	<h3>CollabEdit - </h3>
+	<h3>CollabEdit</h3>
 	<div class="container">
 		<div class="row row-offcanvas row-offcanvas-right">
 
@@ -110,22 +104,17 @@
 	</div>
 </div>
 
+	<!-- footer -->
 	<footer class="footer" >
-    <div class="container" style="margin:0 auto;">
-        <div class="row">&copy; <a href="mailto:nilebox@gmail.com">nilebox</a>,  2014
-            
-            
-        </div>
-    </div>
-</footer>
-
+		<div class="container" style="margin:0 auto;">
+			<div class="row">&copy; <a href="mailto:nilebox@gmail.com">nilebox</a>, 2014</div>
+		</div>
+	</footer>
 
 	<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-	
+	<script src="${root}/resources/js/jquery-1.8.0-min.js"></script>
 	<script src="${root}/resources/js/json2.js"></script>
 	<script src="${root}/resources/js/bootstrap.min.js"></script>
-	<script src="${root}/resources/js/bootstrap-datepicker.js"></script>
-	<script src="${root}/resources/js/offcanvas.js"></script>
-	<script src="${root}/resources/js/highcharts.js"></script>
+	<script src="${root}/resources/js/bootstrap-editable.min.js"></script>	
 </body>
 </html>

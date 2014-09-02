@@ -7,7 +7,12 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
 import javax.persistence.SequenceGenerator;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import ru.nilebox.collabedit.service.auth.UserDetailsTool;
 
 /**
  *
@@ -20,7 +25,10 @@ public class Document implements Serializable {
 	Long id;
 	String title;
 	String contents;
-	Date created = new Date();
+	private String createdBy;
+	private Date created;
+	private String modifiedBy;
+	private Date modified;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "document_id_seq_generator")
@@ -41,7 +49,7 @@ public class Document implements Serializable {
 		this.title = title;
 	}
 
-	@Column(name="contents", columnDefinition = "TEXT not null", unique = false, nullable = true)
+	@Column(name="contents", columnDefinition = "TEXT", unique = false, nullable = true)
 	public String getContents() {
 		return contents;
 	}
@@ -50,6 +58,17 @@ public class Document implements Serializable {
 		this.contents = contents;
 	}
 
+	@Column
+	public String getCreatedBy() {
+		return createdBy;
+	}
+
+	public void setCreatedBy(String createdBy) {
+		this.createdBy = createdBy;
+	}
+
+	@Column(columnDefinition = "timestamp with time zone")
+	@Temporal(TemporalType.TIMESTAMP)
 	public Date getCreated() {
 		return created;
 	}
@@ -57,5 +76,42 @@ public class Document implements Serializable {
 	public void setCreated(Date created) {
 		this.created = created;
 	}
+
+	@Column
+	public String getModifiedBy() {
+		return modifiedBy;
+	}
+
+	public void setModifiedBy(String modifiedBy) {
+		this.modifiedBy = modifiedBy;
+	}
+
+	@Column(columnDefinition = "timestamp with time zone")
+	@Temporal(TemporalType.TIMESTAMP)
+	public Date getModified() {
+		return modified;
+	}
+
+	public void setModified(Date modified) {
+		this.modified = modified;
+	}
+	
+	@PreUpdate
+	@PrePersist
+	void preUpdate() {
+		User user = UserDetailsTool.getUserDetailsFromContext();
+		if (user != null) {
+			modifiedBy = user.getUsername();
+		} else {
+			modifiedBy = "system";
+		}
+
+		modified = new Date();
+
+		if (created == null) {
+			created = modified;
+			createdBy = modifiedBy;
+		}
+	}	
 	
 }

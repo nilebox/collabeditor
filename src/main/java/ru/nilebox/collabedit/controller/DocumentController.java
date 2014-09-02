@@ -46,4 +46,16 @@ public class DocumentController {
 
 		return mav;
 	}
+	
+	@RequestMapping(value = "create.html", method = RequestMethod.GET)
+	public ModelAndView createDocument(Principal principal) {
+
+		ModelAndView mav = new ModelAndView("doc");
+		
+		Document document = new Document();
+		document = docRepo.save(document);
+		mav.addObject("doc", document);
+
+		return mav;
+	}
 }
