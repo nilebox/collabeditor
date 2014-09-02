@@ -28,10 +28,8 @@ public class HomeController {
 			Principal principal) {
 		ModelAndView mav = new ModelAndView("home");
 		
-		//TODO: load only id+title, without contents
-		Iterable<Document> documents = docRepo.findAll();
+		Iterable<Document> documents = docRepo.getSortedDocuments();
 		mav.addObject("docs", documents);
-		
 		
 		return mav;
 	}	

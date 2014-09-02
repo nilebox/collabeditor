@@ -4,6 +4,8 @@ import java.security.Principal;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -11,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import ru.nilebox.collabedit.dao.DocumentRepository;
 import ru.nilebox.collabedit.model.Document;
+import ru.nilebox.collabedit.model.DocumentInfo;
 
 /**
  *
@@ -23,19 +26,14 @@ public class DocumentController {
 
 	@Autowired
 	DocumentRepository docRepo;
-
-	@RequestMapping(value = "list.html", method = RequestMethod.GET)
-	public ModelAndView getDocuments(Principal principal) {
-
-		ModelAndView mav = new ModelAndView("docs");
-		
-		//TODO: load only id+title, without contents
-		Iterable<Document> documents = docRepo.findAll();
-		mav.addObject("docs", documents);
-
-		return mav;
-	}
 	
+	private SimpMessagingTemplate template;
+
+    @Autowired
+    public DocumentController(SimpMessagingTemplate template) {
+		this.template = template;
+    }
+
 	@RequestMapping(value = "edit.html", method = RequestMethod.GET)
 	public ModelAndView getDocument(@RequestParam(required=true) Long id, Principal principal) {
 
@@ -48,14 +46,11 @@ public class DocumentController {
 	}
 	
 	@RequestMapping(value = "create.html", method = RequestMethod.GET)
-	public ModelAndView createDocument(Principal principal) {
-
-		ModelAndView mav = new ModelAndView("doc");
-		
+	public String createDocument(Principal principal) {
 		Document document = new Document();
 		document = docRepo.save(document);
-		mav.addObject("doc", document);
 
-		return mav;
+		return "redirect:/docs/edit.html?id=" + document.getId();
 	}
+	
 }
