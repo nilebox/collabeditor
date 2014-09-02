@@ -15,7 +15,7 @@
 <script src="${root}/resources/js/moment.min.js"></script>
 <script src="${root}/resources/js/jquery-1.8.0-min.js"></script>
 <script src="${root}/resources/js/jquery-jtemplates.js"></script>
-<title>TR Reports</title>
+<title>CollabEdit</title>
 <link href="${root}/resources/css/bootstrap.css" rel="stylesheet">
 <link href="${root}/resources/css/bootstrap-datepicker.css"
 	rel="stylesheet">
@@ -37,7 +37,7 @@
 			<div class="navbar-header">
 				<button type="button" class="navbar-toggle" data-toggle="collapse"
 					data-target=".navbar-collapse">
-					<span class="sr-only">Навигация</span> <span
+					<span class="sr-only">Navigation</span> <span
 						class="icon-bar"></span> <span class="icon-bar"></span> <span
 						class="icon-bar"></span>
 				</button>
@@ -47,41 +47,23 @@
 				<ul class="nav navbar-nav navbar-right">
 					
 					<li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-user"></span>
-								<c:set var="username"><sec:authentication property="principal.name" /></c:set> 
-								<c:if test="${empty username}">
-									<c:set var="username"><sec:authentication property="principal.username" /></c:set> 
-								</c:if>
+								<c:set var="username"><sec:authentication property="principal.username" /></c:set> 
 								${username}
 								<ul class="dropdown-menu">
 								
-									<li><a href='<c:url value="/users/edit.html" />'>Редактировать</a></li>
-									
-								
-								<sec:authorize
-									access="hasAnyRole('ROLE_ORGANIZER', 'ROLE_ADMIN')">
-									<li role="presentation" class="divider"></li>
-									<c:set var="region"><sec:authentication property="principal.organizer.region" /></c:set>
-									<c:if test="${region }">
-										<li><a role="menuitem" tabindex="-1" href="#">Регион: <sec:authentication property="principal.organizer.region.name" /></a></li>
-										<li><a role="menuitem" tabindex="-1" href="#">Организатор: <sec:authentication property="principal.organizer.name" /></a></li>
-										<li><a role="menuitem" tabindex="-1" href="#">ИНН: <sec:authentication property="principal.organizer.inn" /></a></li>
-									</c:if>
-								</sec:authorize>
+									<li><a href='<c:url value="/users/edit.html" />'>Edit</a></li>
 
 							</ul>
 								
 					</a>	</li>
-					<sec:authorize access="hasAnyRole('ROLE_ORGANIZER', 'ROLE_ADMIN')">
+					<sec:authorize access="hasAnyRole('ROLE_ADMIN')">
 						<li class="dropdown"><a href="#" class="dropdown-toggle"
 							data-toggle="dropdown"><span class="glyphicon glyphicon-cog"></span>
-								Настройки<b class="caret"></b></a>
+								Settings<b class="caret"></b></a>
 							<ul class="dropdown-menu">
-								<sec:authorize access="hasAnyRole('ROLE_ADMIN')">
-									<li><a href="<c:url value='/settings.html' />">Организаторы</a></li>
-								</sec:authorize>
 								<sec:authorize
-									access="hasAnyRole('ROLE_ORGANIZER', 'ROLE_ADMIN')">
-									<li><a href="<c:url value='/users/list.html' />">Пользователи</a></li>
+									access="hasAnyRole('ROLE_ADMIN')">
+									<li><a href="<c:url value='/users/list.html' />">Users</a></li>
 								</sec:authorize>
 
 							</ul></li>
@@ -89,7 +71,7 @@
 					</sec:authorize>
 
 					<li><a href='<c:url value="/j_spring_security_logout" />'><span
-							class="glyphicon glyphicon-share"></span> Выйти</a></li>
+							class="glyphicon glyphicon-share"></span> Logout</a></li>
 				</ul>
 			</div>
 			<!-- /.nav-collapse -->
@@ -98,6 +80,7 @@
 	</div>
 	<!-- /.navbar -->
 
+	<h3>CollabEdit - </h3>
 	<div class="container">
 		<div class="row row-offcanvas row-offcanvas-right">
 
@@ -113,18 +96,10 @@
 			<div class="col-xs-6 col-sm-3 sidebar-offcanvas" id="sidebar"	role="navigation">
 				<div class="list-group">
 					
-					<sec:authorize access="hasAnyRole('ROLE_ORGANIZER','ROLE_USER', 'ROLE_ADMIN')">
-						<a class="list-group-item <c:if test="${page eq 'daily' }">active</c:if>" href="<c:url value='/home.html' />">Динамика продаж</a>
-						<a class="list-group-item  <c:if test="${page eq 'organizer' }">active</c:if>"" href="<c:url value='/reports/organizers.html' />">Отчет
-											организатора по событиям</a>
-						<a class="list-group-item  <c:if test="${page eq 'etickets' }">active</c:if>"" href="<c:url value='/reports/etickets.html' />">Отчет
-											продажи e-билетов</a>
+					<sec:authorize access="hasAnyRole('ROLE_USER', 'ROLE_ADMIN')">
+						<a class="list-group-item <c:if test="${page eq 'user' }">active</c:if>" href="<c:url value='/user.html' />">User profile</a>						
+						<a class="list-group-item <c:if test="${page eq 'home' }">active</c:if>" href="<c:url value='/home.html' />">Documents</a>
 					</sec:authorize>
-					<sec:authorize access="hasAnyRole('ROLE_SKA', 'ROLE_ADMIN')">
-						<a href="<c:url value='/reports/sibur/main.html' />"
-							class="list-group-item  <c:if test="${page eq 'spartak' }">active</c:if>"">Отчет по кассам</a>
-					</sec:authorize>
-					
 
 				</div>
 				
@@ -137,7 +112,7 @@
 
 	<footer class="footer" >
     <div class="container" style="margin:0 auto;">
-        <div class="row">&copy; <a href="http://foggylab.ru/">foggylab</a>,  2014
+        <div class="row">&copy; <a href="mailto:nilebox@gmail.com">nilebox</a>,  2014
             
             
         </div>
@@ -152,15 +127,5 @@
 	<script src="${root}/resources/js/bootstrap-datepicker.js"></script>
 	<script src="${root}/resources/js/offcanvas.js"></script>
 	<script src="${root}/resources/js/highcharts.js"></script>
-	<script src="${root}/resources/js/modules/exporting.js"></script>
-	<script type="text/javascript"
-		src="${root}/resources/js/bootstrap-datepicker.ru.js" charset="UTF-8"></script>
-	<script type="text/javascript">
-		$('.datepicker').datepicker({
-			format : 'dd.mm.yyyy',
-			language : 'ru'
-		});
-		
-	</script>
 </body>
 </html>

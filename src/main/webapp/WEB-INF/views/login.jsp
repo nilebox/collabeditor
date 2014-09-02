@@ -19,11 +19,12 @@
     <![endif]-->
 </head>
 <body>
+	
 	<div class="container-fluid">
 		<div class="row">
 			<div class="col-md-4 col-xs-2" placeholder=".col-xs-4"></div>
 			<div class="col-md-4 col-xs-6" placeholder=".col-xs-4">
-				<p class="text-primary lead">Вход в систему</p>
+				<h2 class="text-primary lead">Please sign in</h2>
 			</div>
 			<div class="col-md-4 col-xs-2" placeholder=".col-xs-4"></div>
 		</div>
@@ -52,7 +53,7 @@
 						<div class="col-md-4 col-xs-2" placeholder=".col-xs-4"></div>
 						<div class="col-md-4 col-xs-10" placeholder=".col-xs-4">
 							<p>
-								<button class="btn btn-primary" type="submit">Войти</button>
+								<button class="btn btn-primary" type="submit">Sign in</button>
 							</p>
 						</div>
 						<div class="col-md-4 col-xs-2" placeholder=".col-xs-4"></div>
@@ -63,7 +64,7 @@
 				<div class="row">
 					<div class="col-xs-4" placeholder=".col-xs-4"></div>
 					<div class="col-xs-4" placeholder=".col-xs-4">
-						<p class="text-warning lead">Ошибка входа:</p>
+						<p class="text-warning lead">Sign in error:</p>
 					</div>
 					<div class="col-xs-4" placeholder=".col-xs-4"></div>
 				</div>
@@ -77,7 +78,7 @@
 				<div class="row">
 					<div class="col-xs-4" placeholder=".col-xs-4"></div>
 					<div class="col-xs-4" placeholder=".col-xs-4">
-						<a class="btn btn-primary" href="<c:url value='login.html' />" role="button">Попробуйте еще раз</a>
+						<a class="btn btn-primary" href="<c:url value='login.html' />" role="button">Try again</a>
 					</div>
 					<div class="col-xs-4" placeholder=".col-xs-4"></div>
 				</div>

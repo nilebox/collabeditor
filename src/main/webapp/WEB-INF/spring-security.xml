@@ -12,15 +12,18 @@
 		<intercept-url pattern='/users/**' access='ROLE_ADMIN' />
 		<form-login login-page='/login.html' default-target-url='/home.html' authentication-failure-url="/logerror.html" always-use-default-target='true' />
 	</http>
-	<beans:bean name="collabUserDetailsService" class="ru.nilebox.collabedit.service.auth.CollabEditUserDetailsService">
+	<beans:bean name="collabeditUserDetailsService" class="ru.nilebox.collabedit.service.auth.CollabEditUserDetailsService">
 		<beans:property name="username" value="${local.username?username}"/>
 		<beans:property name="password" value="${local.password?password}"></beans:property>
 	</beans:bean>
+	
+	<beans:bean id="webexpressionHandler" class="org.springframework.security.web.access.expression.DefaultWebSecurityExpressionHandler" />
 	 
 	<authentication-manager>
-		<authentication-provider user-service-ref="collabUserDetailsService">
+		<authentication-provider user-service-ref="collabeditUserDetailsService">
 			<password-encoder hash="md5" />
 		</authentication-provider>
+		<authentication-provider ref="collabeditAuthProvider" />
 	</authentication-manager>
 
 </beans:beans>
