@@ -7,7 +7,7 @@
         http://www.springframework.org/schema/websocket/spring-websocket-4.0.xsd" default-autowire="byName">
 
   <websocket:message-broker application-destination-prefix="/app">
-        <websocket:stomp-endpoint path="/collab">
+        <websocket:stomp-endpoint path="/ws">
             <websocket:sockjs/>
         </websocket:stomp-endpoint>
         <websocket:simple-broker prefix="/topic"/>

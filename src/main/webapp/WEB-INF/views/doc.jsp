@@ -23,7 +23,7 @@
 			<button type="button" class="btn btn-success">Save</button>
 			<button type="button" class="btn btn-danger">Delete</button>
 		</p>
-		<textarea id="textarea" class="textarea" placeholder="Please enter text here..." style="width: 810px; height: 400px;">${doc.contents}</textarea>
+		<textarea id="collab_textarea" class="textarea" placeholder="Please enter text here..." style="width: 810px; height: 400px;">${doc.contents}</textarea>
 	</div>
 </div>
 
@@ -31,10 +31,10 @@
 <script src="${root}/resources/js/stomp.js"></script>
 <script src="${root}/resources/js/collab.js"></script>
 <script type="text/javascript">
-	var stompClient = stompConnect(${doc.id});
-	var oldVal = $("#textarea").val();
+	var stompClient = stompConnect("<c:url value='/ws'/>", ${doc.id});
+	var oldVal = $("#collab_textarea").val();
 
-	$("#textarea").on('change keyup paste', function() {
+	$("#collab_textarea").on('change keyup paste', function() {
 		var currentVal = $(this).val();
 		if(currentVal === oldVal) {
 			return; //check to prevent multiple simultaneous triggers
@@ -42,7 +42,6 @@
 
 		oldVal = currentVal;
 		//action to be performed on textarea changed
-		alert("changed: " + currentVal);
 		stompSend(stompClient, ${doc.id}, null, currentVal);
 	});
 	

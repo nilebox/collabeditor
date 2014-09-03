@@ -33,5 +33,10 @@ public class DocumentInfo {
 	public void setContents(String contents) {
 		this.contents = contents;
 	}
+
+	@Override
+	public String toString() {
+		return "DocumentInfo{" + "id=" + id + ", title=" + title + ", contents=" + contents + '}';
+	}
 	
 }

@@ -19,7 +19,7 @@
 
 	<import resource="spring-security.xml" />
 
-	<import resource="websockets.xml" />		
+<!--	<import resource="websockets.xml" />		-->
 	<import resource="spring-context.xml" />
 	<import resource="db.xml" />
 
