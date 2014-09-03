@@ -105,8 +105,6 @@ public class Document implements Serializable {
 		User user = UserDetailsTool.getUserDetailsFromContext();
 		if (user != null) {
 			modifiedBy = user.getUsername();
-		} else {
-			modifiedBy = "system";
 		}
 
 		modified = new Date();

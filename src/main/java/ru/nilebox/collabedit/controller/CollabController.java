@@ -1,5 +1,6 @@
 package ru.nilebox.collabedit.controller;
 
+import java.security.Principal;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,10 +31,11 @@ public class CollabController {
     }
 
 	@MessageMapping("/collab")
-    public void update(DocumentInfo info) throws Exception {
+    public void update(DocumentInfo info, Principal principal) throws Exception {
 		logger.info("Received data: " + info);
         Document document = docRepo.findOne(info.getId());
 		//document.setTitle(info.getTitle());
+		document.setModifiedBy(principal.getName());
 		document.setContents(info.getContents());
 		docRepo.save(document);
 		template.convertAndSend("/topic/collab/" + info.getId(), info);
