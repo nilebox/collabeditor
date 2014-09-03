@@ -11,6 +11,10 @@ import org.springframework.stereotype.Controller;
 import ru.nilebox.collabedit.dao.DocumentRepository;
 import ru.nilebox.collabedit.model.Document;
 import ru.nilebox.collabedit.model.DocumentInfo;
+import ru.nilebox.collabedit.transform.Diff;
+import ru.nilebox.collabedit.transform.DiffProcessor;
+import ru.nilebox.collabedit.transform.Operation;
+import ru.nilebox.collabedit.transform.TransformException;
 
 /**
  *
@@ -22,6 +26,9 @@ public class CollabController {
 
 	@Autowired
 	DocumentRepository docRepo;
+	
+	@Autowired
+	DiffProcessor diffProcessor;	
 	
 	private SimpMessagingTemplate template;
 
@@ -39,5 +46,16 @@ public class CollabController {
 		document.setContents(info.getContents());
 		docRepo.save(document);
 		template.convertAndSend("/topic/collab/" + info.getId(), info);
-    }	
+    }
+	
+	@MessageMapping("/diff")
+	public void apply(Diff diff, Principal principal) {
+		logger.info("Received data: " + diff);
+		try {
+			diffProcessor.applyDiff(diff);
+			template.convertAndSend("/topic/diff/" + diff.getId(), diff);
+		} catch (TransformException ex) {
+			logger.error("Error processing diff: " + diff, ex);
+		}
+	}
 }

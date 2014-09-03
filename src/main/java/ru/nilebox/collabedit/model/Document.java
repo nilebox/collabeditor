@@ -31,6 +31,7 @@ public class Document implements Serializable {
 	private Date created;
 	private String modifiedBy;
 	private Date modified;
+	private Integer version = 1;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "document_id_seq_generator")
@@ -49,6 +50,14 @@ public class Document implements Serializable {
 
 	public void setTitle(String title) {
 		this.title = title;
+	}
+
+	public Integer getVersion() {
+		return version;
+	}
+
+	public void setVersion(Integer version) {
+		this.version = version;
 	}
 
 	@Basic(fetch = FetchType.LAZY)

@@ -192,6 +192,13 @@
 			<version>2.3.3</version>
 		</dependency>
 
+		<!-- TestNG -->
+		<dependency>
+			<groupId>org.testng</groupId>
+			<artifactId>testng</artifactId>
+			<version>6.3.1</version>
+			<scope>test</scope>
+		</dependency>		
 		
 	</dependencies>
 
