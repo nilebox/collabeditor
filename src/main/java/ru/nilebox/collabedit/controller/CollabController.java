@@ -54,8 +54,19 @@ public class CollabController {
 		try {
 			diffProcessor.applyDiff(diff);
 			template.convertAndSend("/topic/diff/" + diff.getId(), diff);
+			
+			//TODO: for testing purposes only
+			sendDocInfo(diff.getId());
 		} catch (TransformException ex) {
 			logger.error("Error processing diff: " + diff, ex);
 		}
+	}
+	
+	private void sendDocInfo(Long id) {
+		Document doc = diffProcessor.getDocument(id);
+		DocumentInfo info = new DocumentInfo();
+		info.setId(id);
+		info.setContents(doc.getContents());
+		template.convertAndSend("/topic/collab/" + info.getId(), info);
 	}
 }

@@ -25,11 +25,11 @@ public class DiffProcessor {
 	
 	public void applyDiff(Diff diff) throws TransformException {
 		Operation operation = diff.getOperation();
-		OperationHistory history = getOperationHistory(diff.getId());
-		List<Operation> diffOperations = history.getOperationsForDifference(diff.getOperation());
-		for (Operation op : diffOperations) {
-			operation.transformWith(op);
-		}
+//		OperationHistory history = getOperationHistory(diff.getId());
+//		List<Operation> diffOperations = history.getOperationsForDifference(diff.getOperation());
+//		for (Operation op : diffOperations) {
+//			operation.transformWith(op);
+//		}
 		
 		StringBuilder contents = getDocContents(diff.getId());
 		switch(operation.getType()) {
@@ -53,7 +53,7 @@ public class DiffProcessor {
 		}
 	}
 	
-	private Document getDocument(Long docId) {
+	public Document getDocument(Long docId) {
 		Document doc = docs.get(docId);
 		if (doc == null) {
 			Document newDoc = docRepo.findOne(docId);

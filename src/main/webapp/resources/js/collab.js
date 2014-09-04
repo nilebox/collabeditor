@@ -1,11 +1,11 @@
-function stompConnect(url, docid) {
+function stompConnect(url, docid, notifyReceive) {
 	var socket = new SockJS(url, null, {rtt:5000});
 	var stompClient = Stomp.over(socket);
 	stompClient.connect({}, function(frame) {
 		console.log('Connected: ' + frame);
 		stompClient.subscribe('/topic/collab/' + docid, function(docinfo) {
 			console.log('Received data: ' + docinfo);
-			refreshDoc(JSON.parse(docinfo.body));
+			notifyReceive(JSON.parse(docinfo.body));
 		});
 	});
 	return stompClient;
@@ -16,13 +16,14 @@ function stompDisconnect(stompClient) {
 	console.log("Disconnected");
 }
 
-function stompSend(stompClient, docid, doctitle, contents) {
-	var docinfo = JSON.stringify({'id': docid, 'title': doctitle, 'contents': contents});
-	console.log("Sending docinfo: " + docinfo);
-	stompClient.send("/app/collab", {}, docinfo);
-}
+//function stompSend(stompClient, docid, doctitle, contents) {
+//	var docinfo = JSON.stringify({'id': docid, 'title': doctitle, 'contents': contents});
+//	console.log("Sending docinfo: " + docinfo);
+//	stompClient.send("/app/collab", {}, docinfo);
+//}
 
-function refreshDoc(docInfo) {
-	//document.getElementById('doctitle').innerHTML = docInfo.title;
-	document.getElementById('collab_textarea').value = docInfo.contents;
+function stompSend(stompClient, operation) {
+	var op = JSON.stringify(operation);
+	console.log("Sending operation: " + op);
+	stompClient.send("/app/diff", {}, op);
 }

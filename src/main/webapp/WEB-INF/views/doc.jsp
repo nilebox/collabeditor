@@ -29,21 +29,11 @@
 
 <script src="${root}/resources/js/sockjs-0.3.4.js"></script>
 <script src="${root}/resources/js/stomp.js"></script>
+<script src="${root}/resources/js/uuid.js"></script>
 <script src="${root}/resources/js/collab.js"></script>
+<script src="${root}/resources/js/collab-textarea.js"></script>
 <script type="text/javascript">
-	var stompClient = stompConnect("<c:url value='/ws'/>", ${doc.id});
-	var oldVal = $("#collab_textarea").val();
-
-	$("#collab_textarea").on('change keyup paste', function() {
-		var currentVal = $(this).val();
-		if(currentVal === oldVal) {
-			return; //check to prevent multiple simultaneous triggers
-		}
-
-		oldVal = currentVal;
-		//action to be performed on textarea changed
-		stompSend(stompClient, ${doc.id}, null, currentVal);
-	});
-	
+	var stompClient = stompConnect("<c:url value='/ws'/>", ${doc.id}, notifyReceive);
+	attachTextArea(stompClient, ${doc.id}, ${doc.version}, $("#collab_textarea"));
 </script>
 
