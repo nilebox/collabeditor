@@ -1,4 +1,4 @@
-var _textarea = null;;
+var _textarea = null;
 var _stompClient = null;
 var _docid = null;
 var _oldVal = null;
@@ -19,6 +19,7 @@ function attachTextArea(stompClient, docid, docversion, textarea) {
 	_textarea = textarea;
 	_oldVal = textarea.val();
 	_textarea.on('change keyup keydown cut paste textInput', onTextChanged);
+	elem = textarea[0];
 }
 
 function onTextChanged() {
@@ -83,6 +84,8 @@ function notifyInsert(start, text) {
 
 function remoteNotify(diff) {
 	var op = diff.operation;
+	if (op.clientId === _clientId)
+		return;
 	_docversion = op.version;
 	switch (op.type) {
 		case 'Insert':
@@ -97,24 +100,28 @@ function remoteNotify(diff) {
 }
 
 function replaceText(newText, transformCursor) {
+	var elem = _textarea[0]; //get DOM element from jquery object
     if (transformCursor) {
-      var newSelection = [transformCursor(_textarea.selectionStart), transformCursor(_textarea.selectionEnd)];
+      var newSelection = [transformCursor(elem.selectionStart), transformCursor(elem.selectionEnd)];
     }
+	
+	console.log("old selection: " + elem.selectionStart + ", " + elem.selectionEnd);
+	console.log("new selection: " + newSelection);
 
     // Fixate the window's scroll while we set the element's value. Otherwise
     // the browser scrolls to the element.
-    var scrollTop = _textarea.scrollTop;
-    _textarea.val(newText);
-    _oldVal = _textarea.val(); // Not done on one line so the browser can do newline conversion.
-    if (_textarea.scrollTop !== scrollTop)
-		_textarea.scrollTop = scrollTop;
+    var scrollTop = elem.scrollTop;
+    elem.value = newText;
+    _oldVal = elem.value;
+    if (elem.scrollTop !== scrollTop)
+		elem.scrollTop = scrollTop;
 
     // Setting the selection moves the cursor. We'll just have to let your
     // cursor drift if the element isn't active, though usually users don't
     // care.
-    if (newSelection && window.document.activeElement === _textarea) {
-      _textarea.selectionStart = newSelection[0];
-      _textarea.selectionEnd = newSelection[1];
+    if (newSelection && window.document.activeElement === elem) {
+      elem.selectionStart = newSelection[0];
+      elem.selectionEnd = newSelection[1];
     }
   };
   
