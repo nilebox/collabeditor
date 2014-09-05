@@ -61,7 +61,7 @@ function notifyRemove(start, length) {
 			  'operation': {'clientId': _clientId,
 							'type': 'Delete',
 							'position': start,
-							'deleteCount': 1
+							'deleteCount': length
 						    }};
 	stompSend(stompClient, op);
 }
@@ -81,8 +81,61 @@ function notifyInsert(start, text) {
 	stompSend(stompClient, op);	
 }
 
-function notifyReceive(docinfo) {
-	_docversion = docinfo.version;
-	_oldVal = docinfo.contents;
-	_textarea.val(docinfo.contents);
+function remoteNotify(diff) {
+	var op = diff.operation;
+	_docversion = op.version;
+	switch (op.type) {
+		case 'Insert':
+			remoteInsert(op.position, op.insertedText);
+			break;
+		case 'Delete':
+			remoteRemove(op.position, op.deleteCount);
+			break;
+		default:
+			console.error("Invalid operation type: " + op.type);
+	}
 }
+
+function replaceText(newText, transformCursor) {
+    if (transformCursor) {
+      var newSelection = [transformCursor(_textarea.selectionStart), transformCursor(_textarea.selectionEnd)];
+    }
+
+    // Fixate the window's scroll while we set the element's value. Otherwise
+    // the browser scrolls to the element.
+    var scrollTop = _textarea.scrollTop;
+    _textarea.val(newText);
+    _oldVal = _textarea.val(); // Not done on one line so the browser can do newline conversion.
+    if (_textarea.scrollTop !== scrollTop)
+		_textarea.scrollTop = scrollTop;
+
+    // Setting the selection moves the cursor. We'll just have to let your
+    // cursor drift if the element isn't active, though usually users don't
+    // care.
+    if (newSelection && window.document.activeElement === _textarea) {
+      _textarea.selectionStart = newSelection[0];
+      _textarea.selectionEnd = newSelection[1];
+    }
+  };
+  
+  function remoteInsert(pos, text) {
+    var transformCursor = function(cursor) {
+      return pos < cursor ? cursor + text.length : cursor;
+    };
+
+    // Remove any window-style newline characters. Windows inserts these, and
+    // they mess up the generated diff.
+    var prev = _textarea.val().replace(/\r\n/g, '\n');
+    replaceText(prev.slice(0, pos) + text + prev.slice(pos), transformCursor);
+  }
+  
+  function remoteRemove(pos, length) {
+    var transformCursor = function(cursor) {
+      // If the cursor is inside the deleted region, we only want to move back to the start
+      // of the region. Hence the Math.min.
+      return pos < cursor ? cursor - Math.min(length, cursor - pos) : cursor;
+    };
+
+    var prev = _textarea.val().replace(/\r\n/g, '\n');
+    replaceText(prev.slice(0, pos) + prev.slice(pos + length), transformCursor);
+  }

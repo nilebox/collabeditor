@@ -3,9 +3,9 @@ function stompConnect(url, docid, notifyReceive) {
 	var stompClient = Stomp.over(socket);
 	stompClient.connect({}, function(frame) {
 		console.log('Connected: ' + frame);
-		stompClient.subscribe('/topic/collab/' + docid, function(docinfo) {
-			console.log('Received data: ' + docinfo);
-			notifyReceive(JSON.parse(docinfo.body));
+		stompClient.subscribe('/topic/diff/' + docid, function(diff) {
+			console.log('Received data: ' + diff);
+			notifyReceive(JSON.parse(diff.body));
 		});
 	});
 	return stompClient;
