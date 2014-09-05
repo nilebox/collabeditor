@@ -4,6 +4,9 @@ var _docid = null;
 var _oldVal = null;
 var _docversion = null;
 var _clientId = uuid.v4();
+var _operationQueue = new queue();
+var _lastOperationIndex = -1;
+var _pendingOperationIndex = null;
 
 String.prototype.insert = function (index, string) {
   if (index > 0)
@@ -58,13 +61,12 @@ function notifyRemove(start, length) {
 	console.log("new text: " + newText);
 	
 	//send operation to server
-	var op = {'id': _docid,
-			  'operation': {'clientId': _clientId,
-							'type': 'Delete',
-							'position': start,
-							'deleteCount': length
-						    }};
-	stompSend(stompClient, op);
+	var op = {'documentId': _docid,
+			  'clientId': _clientId,
+			  'type': 'Delete',
+			  'position': start,
+			  'deleteCount': length};
+	addOperation(op);
 }
 
 function notifyInsert(start, text) {
@@ -73,19 +75,84 @@ function notifyInsert(start, text) {
 	console.log("new text: " + newText);
 	
 	//send operation to server
-	var op = {'id': _docid,
-			  'operation': {'clientId': _clientId,
-							'type': 'Insert',
-							'position': start,
-							'insertedText': text
-						    }};
-	stompSend(stompClient, op);	
+	var op = {'documentId': _docid,
+			  'clientId': _clientId,
+			  'type': 'Insert',
+			  'position': start,
+			  'insertedText': text};
+	addOperation(op);	
 }
 
-function remoteNotify(diff) {
-	var op = diff.operation;
-	if (op.clientId === _clientId)
+function addOperation(op) {
+	// Increment operation index (needed for futher check of approved operations)
+	_lastOperationIndex++;
+	console.log("Operation: " + op);
+	op.operationIndex = _lastOperationIndex;
+	if (_pendingOperationIndex === null) {
+		// Immediately send the operation to server
+		_pendingOperationIndex = _lastOperationIndex;
+		stompSend(stompClient, op);
+	} else {
+		// TODO: merge with latest operation in queue of the same type
+		// Add operation to queue
+		_operationQueue.enqueue(op);
+	}
+}
+
+function sendOperationFromQueue() {
+	console.log('queue: ' + _operationQueue);
+	if (_operationQueue.size() > 0) {
+		var op = _operationQueue.dequeue();
+		op.version = _docversion;
+		_pendingOperationIndex = op.operationIndex;
+		stompSend(stompClient, op);
+	}
+}
+
+function transformRemoteOperation(remoteOp) {
+	//TODO: transform remoteOp and local operations in queue
+	var index;
+	for (index = 0; index < _operationQueue.size(); index++) {
+		var op = _operationQueue.get(index);
+		op.version = remoteOp.version;
+		// remember original positions
+		var opPosition = op.position;
+		var remoteOpPosition = remoteOp.position;
+		// apply transformation to remote operation
+		transformWith(remoteOp, remoteOpPosition, op, opPosition);
+		// apply transformation to local operation
+		transformWith(op, opPosition, remoteOp, remoteOpPosition);
+	}
+}
+
+function transformWith(originalOp, originalOpPosition, transformOp, transformOpPosition) {
+	switch(transformOp.type) {
+		case 'Insert':
+			if (originalOpPosition >= transformOpPosition) {
+				originalOp.position += transformOp.insertedText.length;
+			}
+			break;
+		case 'Delete':
+			if (originalOpPosition >= transformOpPosition) {
+				originalOp.position -= transformOp.deleteCount;
+			}
+			break;
+		default:
+			console.error("Invalid operation type: " + transformOp.type);
+	}
+}
+
+function remoteNotify(op) {
+	if (op.clientId === _clientId) {
+		if (op.operationIndex !== _pendingOperationIndex) {
+			console.error("Invalid operation index, not equal to pending: " + _pendingOperationIndex);
+			return;
+		}
+		console.log("Received operation confirmation: " + _pendingOperationIndex);
+		_pendingOperationIndex = null;
+		sendOperationFromQueue();
 		return;
+	}
 	_docversion = op.version;
 	switch (op.type) {
 		case 'Insert':
@@ -105,9 +172,6 @@ function replaceText(newText, transformCursor) {
       var newSelection = [transformCursor(elem.selectionStart), transformCursor(elem.selectionEnd)];
     }
 	
-	console.log("old selection: " + elem.selectionStart + ", " + elem.selectionEnd);
-	console.log("new selection: " + newSelection);
-
     // Fixate the window's scroll while we set the element's value. Otherwise
     // the browser scrolls to the element.
     var scrollTop = elem.scrollTop;

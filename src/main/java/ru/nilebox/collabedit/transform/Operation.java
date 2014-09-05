@@ -5,13 +5,22 @@ package ru.nilebox.collabedit.transform;
  * @author nile
  */
 public class Operation {
+	private Long documentId;
 	private String clientId;
+	private Integer operationIndex;
 	private int version;
 	private OperationType type;
 	private int position;
 	private String insertedText;
 	private int deleteCount;
 
+	public Long getDocumentId() {
+		return documentId;
+	}
+
+	public void setDocumentId(Long documentId) {
+		this.documentId = documentId;
+	}
 
 	public String getClientId() {
 		return clientId;
@@ -20,6 +29,14 @@ public class Operation {
 	public void setClientId(String clientId) {
 		this.clientId = clientId;
 	}	
+
+	public Integer getOperationIndex() {
+		return operationIndex;
+	}
+
+	public void setOperationIndex(Integer operationIndex) {
+		this.operationIndex = operationIndex;
+	}
 	
 	public int getVersion() {
 		return version;
@@ -79,7 +96,7 @@ public class Operation {
 			throw new TransformException("Invalid operation type");
 		
         if(this.position >= op.position) {
-            this.position++;
+            this.position += op.getInsertedText().length();
         }
 	}
 	
@@ -91,8 +108,8 @@ public class Operation {
 //            return null;
 //        }
 		
-		if (this.position > op.position) {
-			this.position--;
+		if (this.position >= op.position) {
+			this.position -= op.getDeleteCount();
 		}
 	}
 

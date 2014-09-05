@@ -30,6 +30,7 @@
 <script src="${root}/resources/js/sockjs-0.3.4.js"></script>
 <script src="${root}/resources/js/stomp.js"></script>
 <script src="${root}/resources/js/uuid.js"></script>
+<script src="${root}/resources/js/queue.js"></script>
 <script src="${root}/resources/js/collab.js"></script>
 <script src="${root}/resources/js/collab-textarea.js"></script>
 <script type="text/javascript">

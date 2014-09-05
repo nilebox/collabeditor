@@ -1,7 +1,5 @@
 package ru.nilebox.collabedit.transform;
 
-import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +12,7 @@ import ru.nilebox.collabedit.model.Document;
  * @author nile
  */
 @Service
-public class DiffProcessor {
+public class OperationProcessor {
 	
 	@Autowired
 	DocumentRepository docRepo;
@@ -23,15 +21,14 @@ public class DiffProcessor {
 	private ConcurrentMap<Long, OperationHistory> docHistory = new ConcurrentHashMap<Long, OperationHistory>();
 	private ConcurrentMap<Long, StringBuilder> docContents = new ConcurrentHashMap<Long, StringBuilder>();
 	
-	public void applyDiff(Diff diff) throws TransformException {
-		Operation operation = diff.getOperation();
-//		OperationHistory history = getOperationHistory(diff.getId());
-//		List<Operation> diffOperations = history.getOperationsForDifference(diff.getOperation());
+	public void applyOperation(Operation operation) throws TransformException {
+//		OperationHistory history = getOperationHistory(operation.getDocumentId());
+//		List<Operation> diffOperations = history.getOperationsForDifference(operation);
 //		for (Operation op : diffOperations) {
 //			operation.transformWith(op);
 //		}
 		
-		StringBuilder contents = getDocContents(diff.getId());
+		StringBuilder contents = getDocContents(operation.getDocumentId());
 		switch(operation.getType()) {
 			case Insert:
 				contents.insert(operation.getPosition(), operation.getInsertedText());
@@ -43,13 +40,13 @@ public class DiffProcessor {
 				throw new AssertionError(operation.getType().name());
 		}
 		
-		Document doc = getDocument(diff.getId());
+		Document doc = getDocument(operation.getDocumentId());
 		synchronized(this) {
 			doc.setContents(contents.toString());
 			doc.setVersion(doc.getVersion() + 1);
 			doc = docRepo.save(doc);
-			docs.put(diff.getId(), doc);
-			diff.getOperation().setVersion(doc.getVersion());
+			docs.put(operation.getDocumentId(), doc);
+			operation.setVersion(doc.getVersion());
 		}
 	}
 	
