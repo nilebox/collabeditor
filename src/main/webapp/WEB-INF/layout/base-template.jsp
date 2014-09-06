@@ -16,7 +16,7 @@
 <title>CollabEdit</title>
 <link href="${root}/resources/css/bootstrap.css" rel="stylesheet">
 <link href="${root}/resources/css/main.css" rel="stylesheet">
-<!-- Custom styles for this template -->
+<link href="${root}/resources/css/doc.css" rel="stylesheet">
 <link href="${root}/resources/css/bootstrap-editable.css" rel="stylesheet">
 <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
 <!--[if lt IE 9]>

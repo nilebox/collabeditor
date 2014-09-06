@@ -17,20 +17,35 @@
 	</h1>
 </div>
 
-<div class="container">
-	<div style="margin-top:40px">
-		<p>
-			<button type="button" class="btn btn-success">Save</button>
-			<button type="button" class="btn btn-danger">Delete</button>
-		</p>
-		<textarea id="collab_textarea" class="textarea" placeholder="Please enter text here..." style="width: 810px; height: 400px;">${doc.contents}</textarea>
-	</div>
-</div>
+		<div class="container">
+			<div class="row">
+				<form class="form-horizontal">
+					<div class="span6">	
+						<div id="textarea_container" style="margin-top:40px">
+							<div id="fake_area"><span></span></div>
+							<div id="caret"></div>		
+							<textarea id="collab_textarea" class="textarea" placeholder="Please enter text here..." style="width: 810px; height: 400px;">${doc.contents}</textarea>
+						</div>
+					</div>
+					<div class="navbar-right">
+						<ul>
+							<li class="user-badge-item">
+								<span class="badge" style="background: red;">nile</span>
+							</li>
+							<li class="user-badge-item">
+								<span class="badge" style="background: green;">panbaraban</span>
+							</li>							
+						</ul>
+					</div>
+				</form>
+			</div>
+		</div>
 
 <script src="${root}/resources/js/sockjs-0.3.4.js"></script>
 <script src="${root}/resources/js/stomp.js"></script>
 <script src="${root}/resources/js/uuid.js"></script>
 <script src="${root}/resources/js/queue.js"></script>
+<script src="${root}/resources/js/colors.js"></script>
 <script src="${root}/resources/js/collab.js"></script>
 <script src="${root}/resources/js/collab-textarea.js"></script>
 <script src="${root}/resources/js/bootstrap.min.js"></script>
@@ -38,6 +53,6 @@
 <script type="text/javascript">
 	$('#doctitle').editable();
 	var stompClient = stompConnect("<c:url value='/ws'/>", ${doc.id}, remoteNotify, remoteTitleUpdate);
-	attachTextArea(stompClient, ${doc.id}, ${doc.version}, $("#collab_textarea"), $("#doctitle"));
+	attachTextArea(stompClient, ${doc.id}, ${doc.version}, $("#textarea_container"), $("#collab_textarea"), $("#fake_area"), $("#doctitle"));
 </script>
 

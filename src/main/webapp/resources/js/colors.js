@@ -1,8 +1,6 @@
 Colors = {};
 Colors.names = {
 	blue: "#0000ff",
-	brown: "#a52a2a",
-	cyan: "#00ffff",
 	darkblue: "#00008b",
 	darkcyan: "#008b8b",
 	darkgreen: "#006400",
@@ -17,7 +15,6 @@ Colors.names = {
 	fuchsia: "#ff00ff",
 	gold: "#ffd700",
 	green: "#008000",
-	indigo: "#4b0082",
 	lime: "#00ff00",
 	magenta: "#ff00ff",
 	maroon: "#800000",
@@ -37,5 +34,5 @@ Colors.random = function() {
 		   result = prop;
 		}
 	}
-	return { name: result, rgb: this.names[result]};
+	return this.names[result];
 };

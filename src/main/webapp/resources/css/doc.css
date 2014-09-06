@@ -1,0 +1,78 @@
+/*
+ * Style tweaks
+ * --------------------------------------------------
+ */
+
+.user-badge-item {
+	height: 25px;
+	list-style: none;
+}
+
+#textarea_container {
+	position: relative;
+}
+
+#collab_textarea, #fake_area {
+    position: absolute;
+    margin: 0;
+    padding: 0;
+    height: 600px;
+    width: 800px;
+    font-size: 16px;
+/*    font: 16px "Courier New", Courier, monospace;*/
+    white-space: pre;
+    top: 0;
+    left: 0;
+    resize: none;
+	outline: 0;
+	border: 1px solid;
+	overflow: hidden;
+    word-break: break-all;
+    padding: 5px;
+	-webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -ms-box-sizing: border-box;
+    box-sizing: border-box;
+}
+#fake_area {
+    /* hide */
+    opacity: 0;
+}
+
+.fake_caret {
+    width: 1px;
+    height: 18px;
+    position: absolute;
+    z-index: 100;
+}
+
+.blink{
+    -webkit-animation: blink 700ms infinite alternate;
+    -moz-animation: blink 700ms infinite alternate;
+    -o-animation: blink 700ms infinite alternate;
+    animation: blink 700ms infinite alternate;
+}
+
+@-webkit-keyframes blink {
+	0% { opacity:1; }
+	70% { opacity:1; }
+	100% { opacity:0; }
+}
+
+@-o-keyframes blink {
+	0% { opacity:1; }
+	70% { opacity:1; }
+	100% { opacity:0; }
+}
+
+@-moz-keyframes blink {
+	0% { opacity:1; }
+	70% { opacity:1; }
+	100% { opacity:0; }
+}
+
+@keyframes blink {
+	0% { opacity:1; }
+	70% { opacity:1; }
+	100% { opacity:0; }
+}

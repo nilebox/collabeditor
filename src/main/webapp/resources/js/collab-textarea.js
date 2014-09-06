@@ -1,3 +1,5 @@
+var _container = null;
+var _fakearea = null;
 var _textarea = null;
 var _titleField = null;
 var _stompClient = null;
@@ -10,6 +12,7 @@ var _operationQueue = new queue();
 var _lastOperationIndex = -1;
 var _pendingOperationIndex = null;
 var _clientColors = {};
+var _clientCarets = {};
 
 String.prototype.insert = function(index, string) {
 	if (index > 0)
@@ -18,10 +21,12 @@ String.prototype.insert = function(index, string) {
 		return string + this;
 };
 
-function attachTextArea(stompClient, docid, docversion, textarea, title) {
+function attachTextArea(stompClient, docid, docversion, container, textarea, fakearea, title) {
 	_stompClient = stompClient;
 	_docid = docid;
 	_docversion = docversion;
+	_container = container;
+	_fakearea = fakearea[0].firstChild;
 	_textarea = textarea;
 	_titleField = title;
 	_oldVal = textarea.val();
@@ -97,7 +102,7 @@ function addOperation(op) {
 	if (_pendingOperationIndex === null) {
 		// Immediately send the operation to server
 		_pendingOperationIndex = _lastOperationIndex;
-		stompSend(stompClient, op);
+		stompSendOperation(stompClient, op);
 	} else {
 		// TODO: merge with latest operation in queue of the same type
 		// Add operation to queue
@@ -111,7 +116,7 @@ function sendOperationFromQueue() {
 		var op = _operationQueue.dequeue();
 		op.version = _docversion;
 		_pendingOperationIndex = op.operationIndex;
-		stompSend(stompClient, op);
+		stompSendOperation(stompClient, op);
 	}
 }
 
@@ -194,9 +199,11 @@ function remoteNotify(op) {
 	switch (op.type) {
 		case 'Insert':
 			remoteInsert(op.position, op.insertedText);
+			setCaretPosition(op.clientId, op.position + op.insertedText.length);
 			break;
 		case 'Delete':
 			remoteRemove(op.position, op.deleteCount);
+			setCaretPosition(op.clientId, op.position);
 			break;
 		default:
 			console.error("Invalid operation type: " + op.type);
@@ -278,4 +285,51 @@ function getClientColor(clientId) {
 	var color = Colors.random();
 	_clientColors[clientId] = color;
 	return color;
+}
+
+function createCaret(color) {
+	return $('<div></div>')
+//			.attr({background: color})
+			.addClass('fake_caret blink');
+}
+
+function getClientCaret(clientId) {
+	if (clientId in _clientCarets) {
+		return _clientCarets[clientId];
+	}
+	var caret = createCaret(getClientColor(clientId));
+	//add created cursor to DOM tree
+	_container.append(caret);
+	//save to map
+	_clientCarets[clientId] = caret;
+	return caret;
+}
+
+function setCaretPosition(clientId, position) {
+	var caret = getClientCaret(clientId);
+	var color = getClientColor(clientId);
+	_fakearea.innerHTML = _textarea.val().substring(0, position).replace(/\n$/, '\n\u0001');
+	setCaretXY(_fakearea, _textarea[0], caret[0], getPos(_textarea[0]), color);
+}
+
+function setCaretXY(elem, realElement, caret, offset, color) {
+	var rects = elem.getClientRects();
+	var lastRect = rects[rects.length - 1];
+
+	var x = lastRect.left + lastRect.width - offset[0] + document.body.scrollLeft,
+		y = lastRect.top - realElement.scrollTop - offset[1] + document.body.scrollTop;
+
+	caret.style.cssText = "background: " + color +  "; top: " + y + "px; left: " + x + "px";
+	//console.log(x, y, offset);
+}
+
+function getPos(e) {
+	var x = 0;
+	var y = 0;
+	while (e.offsetParent !== null){
+		x += e.offsetLeft;
+		y += e.offsetTop;
+		e = e.offsetParent;
+	}
+	return [x, y];
 }
