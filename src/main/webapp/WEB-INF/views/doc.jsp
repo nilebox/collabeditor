@@ -13,7 +13,7 @@
 		<c:if test="${empty doctitle}">
 			<c:set var="doctitle" value="Untitled document" />
 		</c:if>
-		<a href="#" id="doctitle" data-type="text" data-placement="right" data-title="Enter document title" class="editable editable-click" data-original-title="" title="">${doctitle}</a>
+		<a href="#" id="doctitle" data-type="text" data-placement="right" data-emptytext="Untitled document" data-title="Enter document title" class="editable editable-click">${doc.title}</a>
 	</h1>
 </div>
 
