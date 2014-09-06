@@ -11,6 +11,7 @@ import org.springframework.stereotype.Controller;
 import ru.nilebox.collabedit.dao.DocumentRepository;
 import ru.nilebox.collabedit.model.Document;
 import ru.nilebox.collabedit.model.DocumentInfo;
+import ru.nilebox.collabedit.model.TitleUpdate;
 import ru.nilebox.collabedit.transform.OperationProcessor;
 import ru.nilebox.collabedit.transform.Operation;
 import ru.nilebox.collabedit.transform.TransformException;
@@ -27,7 +28,7 @@ public class CollabController {
 	DocumentRepository docRepo;
 	
 	@Autowired
-	OperationProcessor diffProcessor;	
+	OperationProcessor operationProcessor;	
 	
 	private SimpMessagingTemplate template;
 
@@ -47,15 +48,22 @@ public class CollabController {
 		template.convertAndSend("/topic/collab/" + info.getId(), info);
     }
 	
-	@MessageMapping("/diff")
-	public void apply(Operation operation, Principal principal) {
+	@MessageMapping("/operation")
+	public void applyOperation(Operation operation, Principal principal) {
 		logger.info("Received data: " + operation);
 		try {
-			diffProcessor.applyOperation(operation);
-			template.convertAndSend("/topic/diff/" + operation.getDocumentId(), operation);
+			operationProcessor.applyOperation(operation);
+			template.convertAndSend("/topic/operation/" + operation.getDocumentId(), operation);
 		} catch (TransformException ex) {
 			logger.error("Error processing diff: " + operation, ex);
 		}
+	}
+	
+	@MessageMapping("/title")
+	public void updateTitle(TitleUpdate update, Principal principal) {
+		logger.info("Received data: " + update);
+		operationProcessor.applyTitle(update);
+		template.convertAndSend("/topic/title/" + update.getDocumentId(), update);
 	}
 	
 }

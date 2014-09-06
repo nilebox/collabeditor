@@ -33,8 +33,11 @@
 <script src="${root}/resources/js/queue.js"></script>
 <script src="${root}/resources/js/collab.js"></script>
 <script src="${root}/resources/js/collab-textarea.js"></script>
+<script src="${root}/resources/js/bootstrap.min.js"></script>
+<script src="${root}/resources/js/bootstrap-editable.min.js"></script>	
 <script type="text/javascript">
-	var stompClient = stompConnect("<c:url value='/ws'/>", ${doc.id}, remoteNotify);
-	attachTextArea(stompClient, ${doc.id}, ${doc.version}, $("#collab_textarea"));
+	$('#doctitle').editable();
+	var stompClient = stompConnect("<c:url value='/ws'/>", ${doc.id}, remoteNotify, remoteTitleUpdate);
+	attachTextArea(stompClient, ${doc.id}, ${doc.version}, $("#collab_textarea"), $("#doctitle"));
 </script>
 

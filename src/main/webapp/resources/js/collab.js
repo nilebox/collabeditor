@@ -1,12 +1,16 @@
-function stompConnect(url, docid, notifyReceive) {
+function stompConnect(url, docid, notifyReceive, notifyTitleUpdate) {
 	var socket = new SockJS(url, null, {rtt:5000});
 	var stompClient = Stomp.over(socket);
 	stompClient.connect({}, function(frame) {
 		console.log('Connected: ' + frame);
-		stompClient.subscribe('/topic/diff/' + docid, function(diff) {
-			console.log('Received data: ' + diff);
-			notifyReceive(JSON.parse(diff.body));
+		stompClient.subscribe('/topic/operation/' + docid, function(op) {
+			console.log('Received data: ' + op);
+			notifyReceive(JSON.parse(op.body));
 		});
+		stompClient.subscribe('/topic/title/' + docid, function(titleUpdate) {
+			console.log('Received data: ' + titleUpdate);
+			notifyTitleUpdate(JSON.parse(titleUpdate.body));
+		});		
 	});
 	return stompClient;
 }
@@ -22,8 +26,14 @@ function stompDisconnect(stompClient) {
 //	stompClient.send("/app/collab", {}, docinfo);
 //}
 
-function stompSend(stompClient, operation) {
+function stompSendOperation(stompClient, operation) {
 	var op = JSON.stringify(operation);
 	console.log("Sending operation: " + op);
-	stompClient.send("/app/diff", {}, op);
+	stompClient.send("/app/operation", {}, op);
+}
+
+function stompSendTitle(stompClient, titleUpdate) {
+	var op = JSON.stringify(titleUpdate);
+	console.log("Sending title: " + op);
+	stompClient.send("/app/title", {}, op);
 }

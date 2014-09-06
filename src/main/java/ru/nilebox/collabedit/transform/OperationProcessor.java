@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.nilebox.collabedit.dao.DocumentRepository;
 import ru.nilebox.collabedit.model.Document;
+import ru.nilebox.collabedit.model.TitleUpdate;
 
 /**
  *
@@ -21,6 +22,15 @@ public class OperationProcessor {
 	private ConcurrentMap<Long, Document> docs = new ConcurrentHashMap<Long, Document>();
 	private ConcurrentMap<Long, OperationHistory> docHistory = new ConcurrentHashMap<Long, OperationHistory>();
 	private ConcurrentMap<Long, StringBuilder> docContents = new ConcurrentHashMap<Long, StringBuilder>();
+	
+	public void applyTitle(TitleUpdate update) {
+		Document doc = getDocument(update.getDocumentId());
+		synchronized(this) {
+			doc.setTitle(update.getTitle());
+			doc = docRepo.save(doc);
+			docs.put(update.getDocumentId(), doc);			
+		}
+	}
 	
 	public void applyOperation(Operation operation) throws TransformException {
 		OperationHistory history = getOperationHistory(operation.getDocumentId());
