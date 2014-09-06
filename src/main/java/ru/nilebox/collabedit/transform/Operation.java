@@ -7,6 +7,7 @@ package ru.nilebox.collabedit.transform;
 public class Operation {
 	private Long documentId;
 	private String clientId;
+	private String username;
 	private Integer operationIndex;
 	private int version;
 	private int newVersion;
@@ -29,7 +30,15 @@ public class Operation {
 
 	public void setClientId(String clientId) {
 		this.clientId = clientId;
-	}	
+	}
+
+	public String getUsername() {
+		return username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
 
 	public Integer getOperationIndex() {
 		return operationIndex;

@@ -9,6 +9,7 @@ var _clientId = uuid.v4();
 var _operationQueue = new queue();
 var _lastOperationIndex = -1;
 var _pendingOperationIndex = null;
+var _clientColors = {};
 
 String.prototype.insert = function(index, string) {
 	if (index > 0)
@@ -268,4 +269,13 @@ function remoteTitleUpdate(titleUpdate) {
 		return; // skip own updates
 	_oldTitle = titleUpdate.title;
 	_titleField.editable('setValue', titleUpdate.title);
+}
+
+function getClientColor(clientId) {
+	if (clientId in _clientColors) {
+		return _clientColors[clientId];
+	}
+	var color = Colors.random();
+	_clientColors[clientId] = color;
+	return color;
 }

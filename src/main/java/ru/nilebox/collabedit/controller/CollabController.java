@@ -53,6 +53,7 @@ public class CollabController {
 		logger.info("Received data: " + operation);
 		try {
 			operationProcessor.applyOperation(operation);
+			operation.setUsername(principal.getName());
 			template.convertAndSend("/topic/operation/" + operation.getDocumentId(), operation);
 		} catch (TransformException ex) {
 			logger.error("Error processing diff: " + operation, ex);
