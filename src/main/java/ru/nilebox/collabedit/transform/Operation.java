@@ -9,6 +9,7 @@ public class Operation {
 	private String clientId;
 	private Integer operationIndex;
 	private int version;
+	private int newVersion;
 	private OperationType type;
 	private int position;
 	private String insertedText;
@@ -44,6 +45,14 @@ public class Operation {
 
 	public void setVersion(int version) {
 		this.version = version;
+	}
+
+	public int getNewVersion() {
+		return newVersion;
+	}
+
+	public void setNewVersion(int newVersion) {
+		this.newVersion = newVersion;
 	}
 
 	public OperationType getType() {
@@ -104,13 +113,43 @@ public class Operation {
 		if (op.type != OperationType.Delete)
 			throw new TransformException("Invalid operation type");
 		
-//		if(this.type == OperationType.Delete && this.position == op.position) {
-//            return null;
-//        }
+		if (op.position < 0)
+			return; //skipped operation
 		
-		if (this.position >= op.position) {
+		boolean deleteIntersects = false;
+		if(this.type == OperationType.Delete) {
+			// if current operation's start index is in range of op's delete operation
+            if (this.position >= op.position && this.position < op.position + op.deleteCount) {
+				deleteIntersects = true;
+				int oldPosition = this.position;
+				this.position = op.position + op.deleteCount;
+				this.deleteCount -= this.position - oldPosition;
+			}
+			int endIndex = this.position + this.deleteCount - 1;
+			// if current operation's end index is in range of op's delete operation
+			if (endIndex >= op.position && endIndex < op.position + op.deleteCount) {
+				deleteIntersects = true;
+				endIndex = op.position - 1;
+				this.deleteCount = endIndex - this.position + 1;
+			}
+			if (this.deleteCount <= 0 || this.position < 0) {
+				this.position = -1;
+				this.deleteCount = 0;
+				return;
+			}
+        }
+		
+		if (!deleteIntersects && this.position >= op.position) {
 			this.position -= op.getDeleteCount();
 		}
+	}
+
+	@Override
+	public String toString() {
+		return "Operation{" + "documentId=" + documentId + ", clientId=" + clientId
+				+ ", operationIndex=" + operationIndex + ", version=" + version
+				+ ", type=" + type + ", position=" + position
+				+ ", insertedText=" + insertedText + ", deleteCount=" + deleteCount + '}';
 	}
 
 }

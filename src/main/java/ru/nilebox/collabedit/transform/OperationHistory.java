@@ -29,4 +29,8 @@ public class OperationHistory {
 		}
 		return result;
 	}
+	
+	public void addOperation(Operation operation) {
+		operations.add(operation);
+	}
 }

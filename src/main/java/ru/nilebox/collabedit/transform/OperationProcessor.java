@@ -1,5 +1,6 @@
 package ru.nilebox.collabedit.transform;
 
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,11 +23,11 @@ public class OperationProcessor {
 	private ConcurrentMap<Long, StringBuilder> docContents = new ConcurrentHashMap<Long, StringBuilder>();
 	
 	public void applyOperation(Operation operation) throws TransformException {
-//		OperationHistory history = getOperationHistory(operation.getDocumentId());
-//		List<Operation> diffOperations = history.getOperationsForDifference(operation);
-//		for (Operation op : diffOperations) {
-//			operation.transformWith(op);
-//		}
+		OperationHistory history = getOperationHistory(operation.getDocumentId());
+		List<Operation> diffOperations = history.getOperationsForDifference(operation);
+		for (Operation op : diffOperations) {
+			operation.transformWith(op);
+		}
 		
 		StringBuilder contents = getDocContents(operation.getDocumentId());
 		switch(operation.getType()) {
@@ -46,8 +47,11 @@ public class OperationProcessor {
 			doc.setVersion(doc.getVersion() + 1);
 			doc = docRepo.save(doc);
 			docs.put(operation.getDocumentId(), doc);
-			operation.setVersion(doc.getVersion());
+			operation.setNewVersion(doc.getVersion());
 		}
+		
+		// add to history - may be needed for "merging" edits from multiple clients
+		history.addOperation(operation);
 	}
 	
 	public Document getDocument(Long docId) {

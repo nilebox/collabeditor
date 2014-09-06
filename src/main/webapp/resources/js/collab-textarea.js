@@ -87,6 +87,7 @@ function addOperation(op) {
 	// Increment operation index (needed for futher check of approved operations)
 	_lastOperationIndex++;
 	console.log("Operation: " + op);
+	op.version = _docversion;
 	op.operationIndex = _lastOperationIndex;
 	if (_pendingOperationIndex === null) {
 		// Immediately send the operation to server
@@ -126,6 +127,9 @@ function transformRemoteOperation(remoteOp) {
 }
 
 function transformWith(originalOp, originalOpPosition, transformOp, transformOpPosition) {
+	if (transformOp.position < 0)
+		return; //skipped operation	
+	
 	switch(transformOp.type) {
 		case 'Insert':
 			if (originalOpPosition >= transformOpPosition) {
@@ -133,7 +137,30 @@ function transformWith(originalOp, originalOpPosition, transformOp, transformOpP
 			}
 			break;
 		case 'Delete':
-			if (originalOpPosition >= transformOpPosition) {
+			var deleteIntersects = false;
+			if (originalOpPosition.type === 'Delete') {
+				// if current operation's start index is in range of op's delete operation
+				if (originalOpPosition >= transformOpPosition && originalOpPosition < transformOpPosition + transformOp.deleteCount) {
+					deleteIntersects = true;
+					var oldPosition = originalOp.position;
+					originalOp.position = transformOpPosition + transformOp.deleteCount;
+					originalOp.deleteCount -= originalOp.position - oldPosition;
+				}
+				var endIndex = originalOp.position + originalOp.deleteCount - 1;
+				// if current operation's end index is in range of op's delete operation
+				if (originalOpPosition >= transformOpPosition && originalOpPosition < transformOpPosition + transformOp.deleteCount) {
+					deleteIntersects = true;
+					endIndex = transformOpPosition.position - 1;
+					originalOpPosition.deleteCount = endIndex - originalOp.position + 1;
+				}
+				if (originalOp.deleteCount <= 0 || originalOp.position < 0) {
+					originalOp.position = -1;
+					originalOp.deleteCount = 0;
+					return;
+				}
+			}
+			
+			if (!deleteIntersects && originalOpPosition >= transformOpPosition) {
 				originalOp.position -= transformOp.deleteCount;
 			}
 			break;
@@ -143,6 +170,8 @@ function transformWith(originalOp, originalOpPosition, transformOp, transformOpP
 }
 
 function remoteNotify(op) {
+	_docversion = op.newVersion;
+	
 	if (op.clientId === _clientId) {
 		if (op.operationIndex !== _pendingOperationIndex) {
 			console.error("Invalid operation index, not equal to pending: " + _pendingOperationIndex);
@@ -153,7 +182,10 @@ function remoteNotify(op) {
 		sendOperationFromQueue();
 		return;
 	}
-	_docversion = op.version;
+	
+	if (op.position < 0)
+		return; //skipped operation
+	
 	switch (op.type) {
 		case 'Insert':
 			remoteInsert(op.position, op.insertedText);
