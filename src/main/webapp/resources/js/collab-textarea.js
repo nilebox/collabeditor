@@ -1,6 +1,7 @@
 var _container = null;
 var _fakearea = null;
 var _textarea = null;
+var _userlist = null;
 var _titleField = null;
 var _stompClient = null;
 var _docid = null;
@@ -13,6 +14,7 @@ var _lastOperationIndex = -1;
 var _pendingOperationIndex = null;
 var _clientColors = {};
 var _clientCarets = {};
+var _clientBadges = {};
 
 String.prototype.insert = function(index, string) {
 	if (index > 0)
@@ -21,13 +23,14 @@ String.prototype.insert = function(index, string) {
 		return string + this;
 };
 
-function attachTextArea(stompClient, docid, docversion, container, textarea, fakearea, title) {
+function attachTextArea(stompClient, docid, docversion, container, textarea, fakearea, title, userlist) {
 	_stompClient = stompClient;
 	_docid = docid;
 	_docversion = docversion;
 	_container = container;
 	_fakearea = fakearea[0].firstChild;
 	_textarea = textarea;
+	_userlist = userlist;
 	_titleField = title;
 	_oldVal = textarea.val();
 	_oldTitle = title.text();
@@ -200,10 +203,12 @@ function remoteNotify(op) {
 		case 'Insert':
 			remoteInsert(op.position, op.insertedText);
 			setCaretPosition(op.clientId, op.position + op.insertedText.length);
+			addUserBadge(op.clientId, op.username);
 			break;
 		case 'Delete':
 			remoteRemove(op.position, op.deleteCount);
 			setCaretPosition(op.clientId, op.position);
+			addUserBadge(op.clientId, op.username);			
 			break;
 		default:
 			console.error("Invalid operation type: " + op.type);
@@ -303,6 +308,20 @@ function getClientCaret(clientId) {
 	//save to map
 	_clientCarets[clientId] = caret;
 	return caret;
+}
+
+function addUserBadge(clientId, username) {
+	if (clientId in _clientBadges)
+		return; //already exists
+	var color = getClientColor(clientId);
+	var li = $('<li></li>').addClass('user-badge-item');
+	var badge = $('<span></span>')
+			.css('background', color)
+			.addClass('badge');
+	badge.text(username);
+	li.append(badge);
+	_userlist.append(li);
+	_clientBadges[clientId] = li;
 }
 
 function setCaretPosition(clientId, position) {

@@ -28,7 +28,7 @@
 						</div>
 					</div>
 					<div class="navbar-right">
-						<ul>
+						<ul id="userlist">
 							<li class="user-badge-item">
 								<span class="badge" style="background: red;">nile</span>
 							</li>
@@ -53,6 +53,6 @@
 <script type="text/javascript">
 	$('#doctitle').editable();
 	var stompClient = stompConnect("<c:url value='/ws'/>", ${doc.id}, remoteNotify, remoteTitleUpdate);
-	attachTextArea(stompClient, ${doc.id}, ${doc.version}, $("#textarea_container"), $("#collab_textarea"), $("#fake_area"), $("#doctitle"));
+	attachTextArea(stompClient, ${doc.id}, ${doc.version}, $("#textarea_container"), $("#collab_textarea"), $("#fake_area"), $("#doctitle"), $("#userlist"));
 </script>
 
