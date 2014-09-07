@@ -33,7 +33,7 @@
             <h4>Users</h4>
             <ul id="userlist" class="user-badge-list">
                 <li class="user-badge-item">
-                    <span class="badge" style="background: black;">${principal.name}</span>
+                    <span class="badge" style="background: black;">${principal.name} (You)</span>
                 </li>
             </ul>
         </div>
