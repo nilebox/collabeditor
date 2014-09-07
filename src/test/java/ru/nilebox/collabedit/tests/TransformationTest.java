@@ -41,18 +41,18 @@ public class TransformationTest {
 	}	
 	
 	private void checkTransform(String original, OperationBatch first, OperationBatch second, String expected) throws TransformationException {
-		Pair<OperationBatch> transform = DocumentTransformer.transformBatches(first, second);		
+		Pair<OperationBatch> transform = DocumentTransformer.transformBatches(first, second);
 		
-		ContentManager dp1 = new ContentManager(original);
-		dp1.applyOperations(first);
-		dp1.applyOperations(transform.getSecond());
+		ContentManager cm1 = new ContentManager(original);
+		cm1.applyOperations(first);
+		cm1.applyOperations(transform.getSecond());
 		
-		ContentManager dp2 = new ContentManager(original);
-		dp2.applyOperations(second);
-		dp2.applyOperations(transform.getFirst());
+		ContentManager cm2 = new ContentManager(original);
+		cm2.applyOperations(second);
+		cm2.applyOperations(transform.getFirst());
 		
-		Assert.assertEquals(dp1.getContent(), dp2.getContent(), "result is different for different order of operations");
-		Assert.assertEquals(dp1.getContent(), expected, "invalid operation result");
+		Assert.assertEquals(cm1.getContent(), cm2.getContent(), "result is different for different order of operations");
+		Assert.assertEquals(cm1.getContent(), expected, "invalid operation result");
 	}
 
 	@Test
@@ -64,18 +64,18 @@ public class TransformationTest {
 		
 		Pair<OperationBatch> transform = DocumentTransformer.transformBatches(first, second);		
 		
-		ContentManager dp1 = new ContentManager(original);
-		dp1.applyOperations(first);
-		Assert.assertEquals(dp1.getContent(), "a A c B E");
-		dp1.applyOperations(transform.getSecond());
+		ContentManager cm1 = new ContentManager(original);
+		cm1.applyOperations(first);
+		Assert.assertEquals(cm1.getContent(), "a A c B E");
+		cm1.applyOperations(transform.getSecond());
 		
-		ContentManager dp2 = new ContentManager(original);
-		dp2.applyOperations(second);
-		Assert.assertEquals(dp2.getContent(), "b A B C d D ");
-		dp2.applyOperations(transform.getFirst());
+		ContentManager cm2 = new ContentManager(original);
+		cm2.applyOperations(second);
+		Assert.assertEquals(cm2.getContent(), "b A B C d D ");
+		cm2.applyOperations(transform.getFirst());
 		
-		Assert.assertEquals(dp1.getContent(), dp2.getContent());
-		Assert.assertEquals(dp1.getContent(), "a b A c B d ");
+		Assert.assertEquals(cm1.getContent(), cm2.getContent());
+		Assert.assertEquals(cm1.getContent(), "a b A c B d ");
 		
 		// However not needed for this test case, check method's consistency
 		checkTransform(original, first, second, "a b A c B d ");
@@ -89,6 +89,42 @@ public class TransformationTest {
 		OperationBatch second = operationBatch(retain(2), delete(3));
 		
 		checkTransform(original, first, second, "ABxF");
+	}
+	
+	@Test
+	public void simultaneousDeleteTransform() throws TransformationException {
+		String original = "ABCDEF";
+		
+		OperationBatch first = operationBatch(retain(2), delete(3));
+		OperationBatch second = operationBatch(retain(2), delete(2));
+		
+		checkTransform(original, first, second, "ABF");
 	}	
+	
+	@Test
+	public void chainTransform() throws TransformationException {
+		String original = "ABCDEF";
+		OperationBatch first = operationBatch(retain(3), insert("x"));
+		OperationBatch second = operationBatch(retain(3), insert("y"));
+		OperationBatch third = operationBatch(retain(3), insert("z"));
+		OperationBatch fourth = operationBatch(retain(2), delete(3));
+		
+		second = DocumentTransformer.transformBatches(first, second).getSecond();
+		
+		third = DocumentTransformer.transformBatches(first, third).getSecond();
+		third = DocumentTransformer.transformBatches(second, third).getSecond();
+		
+		fourth = DocumentTransformer.transformBatches(first, fourth).getSecond();
+		fourth = DocumentTransformer.transformBatches(second, fourth).getSecond();
+		fourth = DocumentTransformer.transformBatches(third, fourth).getSecond();
+		
+		ContentManager cm = new ContentManager(original);
+		cm.applyOperations(first);
+		cm.applyOperations(second);
+		cm.applyOperations(third);
+		cm.applyOperations(fourth);
+
+		Assert.assertEquals(cm.getContent(), "ABxyzF", "invalid operation result");
+	}
 	
 }
