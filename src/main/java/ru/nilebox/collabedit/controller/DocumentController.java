@@ -35,12 +35,13 @@ public class DocumentController {
     }
 
 	@RequestMapping(value = "edit.html", method = RequestMethod.GET)
-	public ModelAndView getDocument(@RequestParam(required=true) Long id, Principal principal) {
+	public ModelAndView editDocument(@RequestParam(required=true) Long id, Principal principal) {
 
 		ModelAndView mav = new ModelAndView("doc");
 		
 		Document document = docRepo.findOne(id);
 		mav.addObject("doc", document);
+		mav.addObject("principal", principal);
 
 		return mav;
 	}

@@ -30,13 +30,10 @@
             </div>
         </div>
         <div class="col-md-4">
-            <h3>Editors</h3>
-            <ul id="userlist">
+            <h4>Users</h4>
+            <ul id="userlist" class="user-badge-list">
                 <li class="user-badge-item">
-                    <span class="badge" style="background: red;">nile</span>
-                </li>
-                <li class="user-badge-item">
-                    <span class="badge" style="background: green;">panbaraban</span>
+                    <span class="badge" style="background: black;">${principal.name}</span>
                 </li>
             </ul>
         </div>
