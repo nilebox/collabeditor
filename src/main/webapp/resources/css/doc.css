@@ -13,11 +13,13 @@
 }
 
 #collab_textarea, #fake_area {
-    position: absolute;
+    /*position: absolute;*/
     margin: 0;
     padding: 0;
-    height: 600px;
-    width: 800px;
+    /*height: 600px;*/
+    /*width: 800px;*/
+    height: 100%;
+    width: 100%;
     font-size: 16px;
 /*    font: 16px "Courier New", Courier, monospace;*/
     white-space: pre;
@@ -36,7 +38,9 @@
 }
 #fake_area {
     /* hide */
+    position: absolute;
     opacity: 0;
+    z-index: -1;
 }
 
 .fake_caret {
