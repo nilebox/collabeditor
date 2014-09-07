@@ -287,7 +287,7 @@ function getClientColor(clientId) {
 	if (clientId in _clientColors) {
 		return _clientColors[clientId];
 	}
-	var color = Colors.random();
+	var color = Colors.next();
 	_clientColors[clientId] = color;
 	return color;
 }

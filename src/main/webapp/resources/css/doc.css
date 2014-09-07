@@ -25,7 +25,7 @@
     left: 0;
     resize: none;
 	outline: 0;
-	border: 1px solid;
+/*	border: 1px solid;*/
 	overflow: hidden;
     word-break: break-all;
     padding: 5px;
@@ -55,24 +55,28 @@
 
 @-webkit-keyframes blink {
 	0% { opacity:1; }
-	70% { opacity:1; }
+	40% { opacity:1; }
+	50% { opacity:1; }	
 	100% { opacity:0; }
 }
 
 @-o-keyframes blink {
 	0% { opacity:1; }
-	70% { opacity:1; }
+	40% { opacity:1; }
+	50% { opacity:1; }	
 	100% { opacity:0; }
 }
 
 @-moz-keyframes blink {
 	0% { opacity:1; }
-	70% { opacity:1; }
+	40% { opacity:1; }
+	50% { opacity:1; }	
 	100% { opacity:0; }
 }
 
 @keyframes blink {
 	0% { opacity:1; }
-	70% { opacity:1; }
+	40% { opacity:1; }
+	50% { opacity:1; }	
 	100% { opacity:0; }
 }
