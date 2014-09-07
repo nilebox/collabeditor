@@ -7,6 +7,7 @@
 	<http pattern="/logerror.html" security="none" />
 
 	<http auto-config="true">
+        <intercept-url pattern='/*' access='ROLE_USER, ROLE_ADMIN' />
 		<intercept-url pattern='/*.html' access='ROLE_USER, ROLE_ADMIN' />
 		<intercept-url pattern='/users/edit.html' access='ROLE_USER, ROLE_ADMIN' />
 		<intercept-url pattern='/users/**' access='ROLE_ADMIN' />
@@ -24,7 +25,7 @@
 		<authentication-provider user-service-ref="collabeditUserDetailsService">
 			<password-encoder hash="md5" />
 		</authentication-provider>
-		<authentication-provider ref="collabeditAuthProvider" />
+		<!--<authentication-provider ref="collabeditAuthProvider" />-->
 	</authentication-manager>
 
 </beans:beans>

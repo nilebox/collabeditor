@@ -24,8 +24,7 @@ public class HomeController {
 	DocumentRepository docRepo;
 	
 	@RequestMapping(value = "/home.html", method = RequestMethod.GET)
-	public ModelAndView home(SecurityContextHolderAwareRequestWrapper request,
-			Principal principal) {
+	public ModelAndView home() {
 		ModelAndView mav = new ModelAndView("home");
 		
 		Iterable<Document> documents = docRepo.getSortedDocuments();
