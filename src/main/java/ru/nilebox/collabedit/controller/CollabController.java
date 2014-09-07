@@ -5,16 +5,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 import ru.nilebox.collabedit.dao.DocumentRepository;
-import ru.nilebox.collabedit.model.Document;
-import ru.nilebox.collabedit.model.DocumentInfo;
 import ru.nilebox.collabedit.model.TitleUpdate;
-import ru.nilebox.collabedit.transform.OperationProcessor;
-import ru.nilebox.collabedit.transform.Operation;
-import ru.nilebox.collabedit.transform.TransformException;
+import ru.nilebox.collabedit.old.transform.OperationProcessor;
+import ru.nilebox.collabedit.old.transform.OperationOld;
+import ru.nilebox.collabedit.transform.TransformationException;
 
 /**
  *
@@ -37,25 +34,14 @@ public class CollabController {
 		this.template = template;
     }
 
-	@MessageMapping("/collab")
-    public void update(DocumentInfo info, Principal principal) throws Exception {
-		logger.info("Received data: " + info);
-        Document document = docRepo.findOne(info.getId());
-		//document.setTitle(info.getTitle());
-		document.setModifiedBy(principal.getName());
-		document.setContents(info.getContents());
-		docRepo.save(document);
-		template.convertAndSend("/topic/collab/" + info.getId(), info);
-    }
-	
 	@MessageMapping("/operation")
-	public void applyOperation(Operation operation, Principal principal) {
+	public void applyOperation(OperationOld operation, Principal principal) {
 		logger.info("Received data: " + operation);
 		try {
 			operationProcessor.applyOperation(operation);
 			operation.setUsername(principal.getName());
 			template.convertAndSend("/topic/operation/" + operation.getDocumentId(), operation);
-		} catch (TransformException ex) {
+		} catch (TransformationException ex) {
 			logger.error("Error processing diff: " + operation, ex);
 		}
 	}

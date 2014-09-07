@@ -1,10 +1,12 @@
-package ru.nilebox.collabedit.transform;
+package ru.nilebox.collabedit.old.transform;
+
+import ru.nilebox.collabedit.transform.TransformationException;
 
 /**
  *
  * @author nile
  */
-public class Operation {
+public class OperationOld {
 	private Long documentId;
 	private String clientId;
 	private String username;
@@ -96,7 +98,7 @@ public class Operation {
 		this.deleteCount = deleteCount;
 	}
 	
-	public void transformWith(Operation op) throws TransformException {
+	public void transformWith(OperationOld op) throws TransformationException {
 		switch(op.getType()) {
 			case Insert:
 				transformWithInsert(op);
@@ -109,18 +111,18 @@ public class Operation {
 		}
 	}
 	
-	public void transformWithInsert(Operation op) throws TransformException {
+	public void transformWithInsert(OperationOld op) throws TransformationException {
 		if (op.type != OperationType.Insert)
-			throw new TransformException("Invalid operation type");
+			throw new TransformationException("Invalid operation type");
 		
         if(this.position >= op.position) {
             this.position += op.getInsertedText().length();
         }
 	}
 	
-	public void transformWithDelete(Operation op) throws TransformException {
+	public void transformWithDelete(OperationOld op) throws TransformationException {
 		if (op.type != OperationType.Delete)
-			throw new TransformException("Invalid operation type");
+			throw new TransformationException("Invalid operation type");
 		
 		if (op.position < 0)
 			return; //skipped operation

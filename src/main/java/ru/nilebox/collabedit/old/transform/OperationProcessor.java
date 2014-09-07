@@ -1,4 +1,4 @@
-package ru.nilebox.collabedit.transform;
+package ru.nilebox.collabedit.old.transform;
 
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import ru.nilebox.collabedit.dao.DocumentRepository;
 import ru.nilebox.collabedit.model.Document;
 import ru.nilebox.collabedit.model.TitleUpdate;
+import ru.nilebox.collabedit.transform.TransformationException;
 
 /**
  *
@@ -32,10 +33,10 @@ public class OperationProcessor {
 		}
 	}
 	
-	public void applyOperation(Operation operation) throws TransformException {
+	public void applyOperation(OperationOld operation) throws TransformationException {
 		OperationHistory history = getOperationHistory(operation.getDocumentId());
-		List<Operation> diffOperations = history.getOperationsForDifference(operation);
-		for (Operation op : diffOperations) {
+		List<OperationOld> diffOperations = history.getOperationsForDifference(operation);
+		for (OperationOld op : diffOperations) {
 			operation.transformWith(op);
 		}
 		

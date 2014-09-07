@@ -1,4 +1,4 @@
-package ru.nilebox.collabedit.transform;
+package ru.nilebox.collabedit.old.transform;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,7 +10,7 @@ import ru.nilebox.collabedit.model.Document;
  */
 public class OperationHistory {
 	private final Document document;
-	private final List<Operation> operations = new ArrayList<Operation>();
+	private final List<OperationOld> operations = new ArrayList<OperationOld>();
 
 	public OperationHistory(Document document) {
 		this.document = document;
@@ -20,9 +20,9 @@ public class OperationHistory {
 		return document;
 	}
 	
-	public List<Operation> getOperationsForDifference(Operation operation) {
-		List<Operation> result = new ArrayList<>();
-		for (Operation op : operations) {
+	public List<OperationOld> getOperationsForDifference(OperationOld operation) {
+		List<OperationOld> result = new ArrayList<>();
+		for (OperationOld op : operations) {
 			if (op.getVersion() >= operation.getVersion()) {
 				result.add(op);
 			}
@@ -30,7 +30,7 @@ public class OperationHistory {
 		return result;
 	}
 	
-	public void addOperation(Operation operation) {
+	public void addOperation(OperationOld operation) {
 		operations.add(operation);
 	}
 }

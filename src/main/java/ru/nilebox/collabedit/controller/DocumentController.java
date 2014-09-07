@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import ru.nilebox.collabedit.dao.DocumentRepository;
 import ru.nilebox.collabedit.model.Document;
-import ru.nilebox.collabedit.model.DocumentInfo;
 
 /**
  *
