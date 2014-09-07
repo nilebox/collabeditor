@@ -51,8 +51,10 @@
 <script src="${root}/resources/js/bootstrap.min.js"></script>
 <script src="${root}/resources/js/bootstrap-editable.min.js"></script>
 <script type="text/javascript">
-    $('#doctitle').editable();
-    var stompClient = stompConnect("<c:url value='/ws'/>", ${doc.id}, remoteNotify, remoteTitleUpdate);
-    attachTextArea(stompClient, ${doc.id}, ${doc.version}, $("#textarea_container"), $("#collab_textarea"), $("#fake_area"), $("#doctitle"), $("#userlist"));
+	$(document).ready(function() {
+		$('#doctitle').editable();
+		var stompClient = stompConnect("<c:url value='/ws'/>", ${doc.id}, remoteNotify, remoteTitleUpdate);
+		attachTextArea(stompClient, ${doc.id}, ${doc.version}, $("#textarea_container"), $("#collab_textarea"), $("#fake_area"), $("#doctitle"), $("#userlist"));
+	});
 </script>
 

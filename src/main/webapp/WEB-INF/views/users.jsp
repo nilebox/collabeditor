@@ -3,15 +3,13 @@
 <%@ taglib prefix="sec"
 	uri="http://www.springframework.org/security/tags"%>
 <c:set var="add_action">
-	<c:url value="/users/edit.html">
-		<c:param name="user_id">${organizer.id}</c:param>
-	</c:url>
+	<c:url value="/users/create.html" />
 </c:set>
 <c:if test="${empty root}">
 	<c:set var="root" value="${pageContext.request.contextPath}" />
 </c:if>
 
-<h2>Список пользователей</h2>
+<h2>Users</h2>
 <c:set var="u" value="${users}"/>
 
 <div class="list-group">
@@ -25,6 +23,5 @@
     </c:forEach>
 </div>
 <p>
-	<a class="btn btn-primary btn-lg" role="button" href="${add_action}">Добавить
-		пользователя</a>
+	<a class="btn btn-primary btn-lg" role="button" href="${add_action}">Create user</a>
 </p>
