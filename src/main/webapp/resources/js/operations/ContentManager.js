@@ -65,7 +65,7 @@ ContentManager.transformCursor = function(cursor, batch) {
 	return cursor;
 };
 
-ContentManager.getRemoteCursor = function(batch) {
+ContentManager.getRemoteCaret = function(batch) {
 	var operations = batch.containers;
 	var index = 0;
 	for (var i = 0; i < operations.length; i++) {

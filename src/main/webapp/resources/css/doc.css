@@ -17,11 +17,11 @@
 	padding:0;
 }
 
-#textarea_container {
+#text_container {
 	position: relative;
 }
 
-#collab_textarea, #fake_area {
+#text_area, #fake_area {
     /*position: absolute;*/
     margin: 0;
     padding: 0;
@@ -45,6 +45,7 @@
     -ms-box-sizing: border-box;
     box-sizing: border-box;
 }
+
 #fake_area {
     /* hide */
     position: absolute;

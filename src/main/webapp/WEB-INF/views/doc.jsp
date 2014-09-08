@@ -13,7 +13,7 @@
         <c:if test="${empty doctitle}">
             <c:set var="doctitle" value="Untitled document"/>
         </c:if>
-        <a href="#" id="doctitle" data-type="text" data-placement="right" data-emptytext="Untitled document" data-title="Enter document title"
+        <a href="#" id="title_area" data-type="text" data-placement="right" data-emptytext="Untitled document" data-title="Enter document title"
            class="editable editable-click">${doc.title}</a>
     </h1>
 </div>
@@ -23,15 +23,15 @@
 
 
         <div class="col-md-8">
-            <div id="textarea_container">
+            <div id="text_container">
                 <div id="fake_area"><span></span></div>
                 <div id="caret"></div>
-                <textarea id="collab_textarea" class="textarea" placeholder="Please enter text here..." rows="28">${doc.contents}</textarea>
+                <textarea id="text_area" class="textarea" placeholder="Please enter text here..." rows="28">${doc.contents}</textarea>
             </div>
         </div>
         <div class="col-md-4">
             <h4>Users</h4>
-            <ul id="userlist" class="user-badge-list">
+            <ul id="user_area" class="user-badge-list">
                 <li class="user-badge-item">
                     <span class="badge" style="background: black;">${principal.name} (You)</span>
                 </li>
@@ -41,37 +41,41 @@
     </div>
 </div>
 
-<script src="${root}/resources/js/ot/ContentManager.js"></script>
-<script src="${root}/resources/js/ot/DocumentChangeNotification.js"></script>
-<script src="${root}/resources/js/ot/DocumentChangeRequest.js"></script>
-<script src="${root}/resources/js/ot/OperationBatch.js"></script>
-<script src="${root}/resources/js/ot/OperationBatchBuffer.js"></script>
-<script src="${root}/resources/js/ot/OperationContainer.js"></script>
-<script src="${root}/resources/js/ot/OperationTransformer.js"></script>
-<script src="${root}/resources/js/ot/Pair.js"></script>
-<script src="${root}/resources/js/ot/Utils.js"></script>
+<script src="${root}/resources/js/operations/ContentManager.js"></script>
+<script src="${root}/resources/js/operations/DocumentChangeNotification.js"></script>
+<script src="${root}/resources/js/operations/DocumentChangeRequest.js"></script>
+<script src="${root}/resources/js/operations/OperationBatch.js"></script>
+<script src="${root}/resources/js/operations/OperationBatchBuffer.js"></script>
+<script src="${root}/resources/js/operations/OperationContainer.js"></script>
+<script src="${root}/resources/js/operations/OperationTransformer.js"></script>
+<script src="${root}/resources/js/operations/Pair.js"></script>
+<script src="${root}/resources/js/operations/Utils.js"></script>
+<script src="${root}/resources/js/controllers/MessageBroker.js"></script>
+<script src="${root}/resources/js/controllers/CollaborationController.js"></script>
+<script src="${root}/resources/js/controllers/UIElementController.js"></script>
 <script src="${root}/resources/js/sockjs-0.3.4.js"></script>
 <script src="${root}/resources/js/stomp.js"></script>
 <script src="${root}/resources/js/uuid.js"></script>
 <script src="${root}/resources/js/queue.js"></script>
 <script src="${root}/resources/js/colors.js"></script>
-<script src="${root}/resources/js/collab.js"></script>
-<script src="${root}/resources/js/collab-textarea.js"></script>
 <script src="${root}/resources/js/bootstrap.min.js"></script>
 <script src="${root}/resources/js/bootstrap-editable.min.js"></script>
 <script src="${root}/resources/js/detector.js"></script>
 <script src="${root}/resources/js/md5.js"></script>
 <script type="text/javascript">
 	$(document).ready(function() {
-		$('#doctitle').editable();
+		$('#title_area').editable();
 		var clientId = hex_md5(pstfgrpnt());
-		var stompClient = stompConnect("<c:url value='/ws'/>", ${doc.id}, remoteNotify, remoteTitleUpdate);
-		attachTextArea(clientId, stompClient, ${doc.id}, ${doc.version}, $("#textarea_container"), $("#collab_textarea"), $("#fake_area"), $("#doctitle"), $("#userlist"));
+		var messageBroker = new MessageBroker("<c:url value='/ws'/>");
+		var elementController = new UIElementController($("#text_container"), $("#text_area"), $("#fake_area"), $("#title_area"), $("#user_area"));
+		var collaborationController = new CollaborationController(clientId, messageBroker, ${doc.id}, ${doc.version}, elementController);
+		var remoteNotify = collaborationController.remoteNotify.bind(collaborationController);
+		var remoteTitleUpdate = collaborationController.remoteTitleUpdate.bind(collaborationController);
+		messageBroker.connect(${doc.id}, remoteNotify, remoteTitleUpdate);
 		<c:forEach items="${clients}" var="client">
 		if (clientId !== '${client.clientId}')
 		{
-			addUserBadge('${client.clientId}', '${client.username}');
-			setCaretPosition('${client.clientId}', ${client.caretPosition});
+			elementController.showRemoteCaret('${client.clientId}', '${client.username}', ${client.caretPosition});
 		}
 		</c:forEach>
 	});

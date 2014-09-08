@@ -1,5 +1,7 @@
 package ru.nilebox.collabedit.transform;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import ru.nilebox.collabedit.operations.OperationBatch;
 import ru.nilebox.collabedit.operations.Operation;
 import ru.nilebox.collabedit.operations.InsertOperation;
@@ -11,7 +13,8 @@ import ru.nilebox.collabedit.operations.DeleteOperation;
  * @author nile
  */
 public class ContentManager {
-
+	private final static Logger logger = LoggerFactory.getLogger(ContentManager.class);
+	
 	private final StringBuilder contentBuilder;
 
 	public ContentManager(String content) {
@@ -34,8 +37,12 @@ public class ContentManager {
 				continue;
 			} else if (op instanceof InsertOperation) {
 				InsertOperation insert = (InsertOperation) op;
-				contentBuilder.insert(index, insert.getText());
-				index += insert.getLength();
+				try {
+					contentBuilder.insert(index, insert.getText());
+					index += insert.getLength();
+				} catch(StringIndexOutOfBoundsException e) {
+					logger.error("Error inserting text; into '" + contentBuilder.toString() + "' string at " + index + " position", e);
+				}
 			} else if (op instanceof DeleteOperation) {
 				DeleteOperation delete = (DeleteOperation) op;
 				contentBuilder.delete(index, index + delete.getLength());

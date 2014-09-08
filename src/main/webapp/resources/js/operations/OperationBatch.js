@@ -1,5 +1,5 @@
-function OperationBatch(documentVersion) {
-	this.documentVersion = documentVersion;
+function OperationBatch(baseDocumentVersion) {
+	this.baseDocumentVersion = baseDocumentVersion;
 	this.containers = [];
 }
 
