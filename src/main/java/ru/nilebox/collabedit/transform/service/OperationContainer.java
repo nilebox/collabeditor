@@ -14,41 +14,41 @@ import ru.nilebox.collabedit.operations.RetainOperation;
  */
 @JsonInclude(Include.NON_NULL)
 public class OperationContainer {
-	private RetainOperation retain;
-	private InsertOperation insert;
-	private DeleteOperation delete;
+	private RetainOperation retainOp;
+	private InsertOperation insertOp;
+	private DeleteOperation deleteOp;
 
-	public RetainOperation getRetain() {
-		return retain;
+	public RetainOperation getRetainOp() {
+		return retainOp;
 	}
 
-	public void setRetain(RetainOperation retain) {
-		this.retain = retain;
+	public void setRetainOp(RetainOperation retainOp) {
+		this.retainOp = retainOp;
 	}
 
-	public InsertOperation getInsert() {
-		return insert;
+	public InsertOperation getInsertOp() {
+		return insertOp;
 	}
 
-	public void setInsert(InsertOperation insert) {
-		this.insert = insert;
+	public void setInsertOp(InsertOperation insertOp) {
+		this.insertOp = insertOp;
 	}
 
-	public DeleteOperation getDelete() {
-		return delete;
+	public DeleteOperation getDeleteOp() {
+		return deleteOp;
 	}
 
-	public void setDelete(DeleteOperation delete) {
-		this.delete = delete;
+	public void setDeleteOp(DeleteOperation deleteOp) {
+		this.deleteOp = deleteOp;
 	}
-	
+
 	public Operation toOperation() {
-		if (retain != null)
-			return retain;
-		if (insert != null)
-			return insert;
-		if (delete != null)
-			return delete;
+		if (retainOp != null)
+			return retainOp;
+		if (insertOp != null)
+			return insertOp;
+		if (deleteOp != null)
+			return deleteOp;
 		throw new IllegalStateException("No operation is set in container");
 	}
 	
@@ -58,15 +58,15 @@ public class OperationContainer {
 		
 		OperationContainer container = new OperationContainer();
 		if (op instanceof RetainOperation) {
-			container.retain = (RetainOperation) op;
+			container.retainOp = (RetainOperation) op;
 			return container;
 		}
 		if (op instanceof InsertOperation) {
-			container.insert = (InsertOperation) op;
+			container.insertOp = (InsertOperation) op;
 			return container;
 		}
 		if (op instanceof DeleteOperation) {
-			container.delete = (DeleteOperation) op;
+			container.deleteOp = (DeleteOperation) op;
 			return container;
 		}
 		throw new IllegalArgumentException("Unknown type of operation: " + op.getClass().getCanonicalName());
@@ -75,9 +75,9 @@ public class OperationContainer {
 	@Override
 	public int hashCode() {
 		int hash = 7;
-		hash = 89 * hash + Objects.hashCode(this.retain);
-		hash = 89 * hash + Objects.hashCode(this.insert);
-		hash = 89 * hash + Objects.hashCode(this.delete);
+		hash = 89 * hash + Objects.hashCode(this.retainOp);
+		hash = 89 * hash + Objects.hashCode(this.insertOp);
+		hash = 89 * hash + Objects.hashCode(this.deleteOp);
 		return hash;
 	}
 
@@ -90,13 +90,13 @@ public class OperationContainer {
 			return false;
 		}
 		final OperationContainer other = (OperationContainer) obj;
-		if (!Objects.equals(this.retain, other.retain)) {
+		if (!Objects.equals(this.retainOp, other.retainOp)) {
 			return false;
 		}
-		if (!Objects.equals(this.insert, other.insert)) {
+		if (!Objects.equals(this.insertOp, other.insertOp)) {
 			return false;
 		}
-		if (!Objects.equals(this.delete, other.delete)) {
+		if (!Objects.equals(this.deleteOp, other.deleteOp)) {
 			return false;
 		}
 		return true;

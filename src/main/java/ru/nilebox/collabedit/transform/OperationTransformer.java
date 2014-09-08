@@ -12,7 +12,7 @@ import ru.nilebox.collabedit.util.Pair;
  *
  * @author nile
  */
-public class DocumentTransformer {
+public class OperationTransformer {
 
 	public static Pair<OperationBatch> transformBatches(OperationBatch first, OperationBatch second) throws TransformationException {
 		OperationBatch firstTransformed = new OperationBatch();

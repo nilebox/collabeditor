@@ -68,9 +68,9 @@ public class SerializationTest {
 
 		OperationContainer oc2 = request2.getOperations().get(0);
 		Assert.assertNotNull(oc2);
-		Assert.assertNull(oc2.getInsert());
-		Assert.assertNull(oc2.getDelete());
-		Assert.assertNotNull(oc2.getRetain());
+		Assert.assertNull(oc2.getInsertOp());
+		Assert.assertNull(oc2.getDeleteOp());
+		Assert.assertNotNull(oc2.getRetainOp());
 		
 		for (int i=0; i < request2.getOperations().size(); i++) {
 			Assert.assertEquals(request2.getOperations().get(i), request1.getOperations().get(i));

@@ -1,12 +1,10 @@
 package ru.nilebox.collabedit.tests;
 
-import java.util.ArrayList;
-import java.util.List;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 import ru.nilebox.collabedit.operations.DeleteOperation;
 import ru.nilebox.collabedit.transform.ContentManager;
-import ru.nilebox.collabedit.transform.DocumentTransformer;
+import ru.nilebox.collabedit.transform.OperationTransformer;
 import ru.nilebox.collabedit.operations.InsertOperation;
 import ru.nilebox.collabedit.operations.Operation;
 import ru.nilebox.collabedit.operations.OperationBatch;
@@ -41,7 +39,7 @@ public class TransformationTest {
 	}	
 	
 	private void checkTransform(String original, OperationBatch first, OperationBatch second, String expected) throws TransformationException {
-		Pair<OperationBatch> transform = DocumentTransformer.transformBatches(first, second);
+		Pair<OperationBatch> transform = OperationTransformer.transformBatches(first, second);
 		
 		ContentManager cm1 = new ContentManager(original);
 		cm1.applyOperations(first);
@@ -51,8 +49,8 @@ public class TransformationTest {
 		cm2.applyOperations(second);
 		cm2.applyOperations(transform.getFirst());
 		
-		Assert.assertEquals(cm1.getContent(), cm2.getContent(), "result is different for different order of operations");
-		Assert.assertEquals(cm1.getContent(), expected, "invalid operation result");
+		Assert.assertEquals(cm1.getContent(), cm2.getContent(), "A+B' vs B+A' transformation");
+		Assert.assertEquals(cm1.getContent(), expected, "Final transformation result");
 	}
 
 	@Test
@@ -62,20 +60,20 @@ public class TransformationTest {
 		OperationBatch first = operationBatch(insert("a "), retain(2), insert("c "), retain(2), delete(4));
 		OperationBatch second = operationBatch(insert("b "), retain(6), insert("d "), retain(2), delete(2));
 		
-		Pair<OperationBatch> transform = DocumentTransformer.transformBatches(first, second);		
+		Pair<OperationBatch> transform = OperationTransformer.transformBatches(first, second);		
 		
 		ContentManager cm1 = new ContentManager(original);
 		cm1.applyOperations(first);
-		Assert.assertEquals(cm1.getContent(), "a A c B E");
+		Assert.assertEquals(cm1.getContent(), "a A c B E", "A transformation");
 		cm1.applyOperations(transform.getSecond());
 		
 		ContentManager cm2 = new ContentManager(original);
 		cm2.applyOperations(second);
-		Assert.assertEquals(cm2.getContent(), "b A B C d D ");
+		Assert.assertEquals(cm2.getContent(), "b A B C d D ", "B transformation");
 		cm2.applyOperations(transform.getFirst());
 		
-		Assert.assertEquals(cm1.getContent(), cm2.getContent());
-		Assert.assertEquals(cm1.getContent(), "a b A c B d ");
+		Assert.assertEquals(cm1.getContent(), cm2.getContent(), "A+B' vs B+A' transformation");
+		Assert.assertEquals(cm1.getContent(), "a b A c B d ", "Final transformation result");
 		
 		// However not needed for this test case, check method's consistency
 		checkTransform(original, first, second, "a b A c B d ");
@@ -109,14 +107,14 @@ public class TransformationTest {
 		OperationBatch third = operationBatch(retain(3), insert("z"));
 		OperationBatch fourth = operationBatch(retain(2), delete(3));
 		
-		second = DocumentTransformer.transformBatches(first, second).getSecond();
+		second = OperationTransformer.transformBatches(first, second).getSecond();
 		
-		third = DocumentTransformer.transformBatches(first, third).getSecond();
-		third = DocumentTransformer.transformBatches(second, third).getSecond();
+		third = OperationTransformer.transformBatches(first, third).getSecond();
+		third = OperationTransformer.transformBatches(second, third).getSecond();
 		
-		fourth = DocumentTransformer.transformBatches(first, fourth).getSecond();
-		fourth = DocumentTransformer.transformBatches(second, fourth).getSecond();
-		fourth = DocumentTransformer.transformBatches(third, fourth).getSecond();
+		fourth = OperationTransformer.transformBatches(first, fourth).getSecond();
+		fourth = OperationTransformer.transformBatches(second, fourth).getSecond();
+		fourth = OperationTransformer.transformBatches(third, fourth).getSecond();
 		
 		ContentManager cm = new ContentManager(original);
 		cm.applyOperations(first);

@@ -20,14 +20,14 @@ public class DocumentManagerRepository {
 	private ConcurrentMap<Long, DocumentManager> managers = new ConcurrentHashMap<Long, DocumentManager>();
 	
 	public DocumentManager getDocumentManager(Long documentId) {
-		DocumentManager doc = managers.get(documentId);
-		if (doc == null) {
-			DocumentManager newDoc = new DocumentManager(documentId, docRepo);
-			doc = managers.putIfAbsent(documentId, newDoc);
-			if (doc == null)
-				doc = newDoc;
+		DocumentManager manager = managers.get(documentId);
+		if (manager == null) {
+			DocumentManager newManager = new DocumentManager(documentId, docRepo);
+			manager = managers.putIfAbsent(documentId, newManager);
+			if (manager == null)
+				manager = newManager;
 		}
-		return doc;
+		return manager;
 	}	
 
 }

@@ -9,7 +9,7 @@ import ru.nilebox.collabedit.model.Document;
 import ru.nilebox.collabedit.model.TitleUpdate;
 import ru.nilebox.collabedit.old.transform.OperationHistory;
 import ru.nilebox.collabedit.transform.ContentManager;
-import ru.nilebox.collabedit.transform.DocumentTransformer;
+import ru.nilebox.collabedit.transform.OperationTransformer;
 import ru.nilebox.collabedit.transform.OperationBatchHistory;
 import ru.nilebox.collabedit.transform.TransformationException;
 
@@ -44,7 +44,7 @@ public class DocumentManager {
 		List<OperationBatch> diffBatches = history.getBatchesForDifference(batch.getDocumentVersion());
 		for (OperationBatch b : diffBatches) {
 			// transform B to B'
-			batch = DocumentTransformer.transformBatches(batch, b).getFirst();
+			batch = OperationTransformer.transformBatches(batch, b).getFirst();
 		}
 		
 		ContentManager contentManager = getContentManager();
