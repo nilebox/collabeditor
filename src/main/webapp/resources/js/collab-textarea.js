@@ -8,14 +8,15 @@ var _docid = null;
 var _oldVal = null;
 var _oldTitle = null;
 var _docversion = null;
-var _clientId = uuid.v4();
+var _clientId = null;
 var _batchBuffer = new OperationBatchBuffer();
 var _pendingRequestId = null;
 var _clientColors = {};
 var _clientCarets = {};
 var _clientBadges = {};
 
-function attachTextArea(stompClient, docid, docversion, container, textarea, fakearea, title, userlist) {
+function attachTextArea(clientId, stompClient, docid, docversion, container, textarea, fakearea, title, userlist) {
+	_clientId = clientId;
 	_stompClient = stompClient;
 	_docid = docid;
 	_docversion = docversion;

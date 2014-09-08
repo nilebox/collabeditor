@@ -41,6 +41,7 @@ public class CollabController {
 			DocumentEditor documentManager =  documentManagerRepo.getDocumentManager(request.getDocumentId());
 			OperationBatch batch = OperationBatch.fromDocumentChangeRequest(request);
 			documentManager.applyBatch(request.getDocumentId(), batch);
+			documentManager.updateClientCarets(request.getClientId(), principal.getName(), batch);
 			DocumentChangeNotification notification = DocumentChangeNotification.create(request, batch, principal);
 			template.convertAndSend("/topic/operation/" + request.getDocumentId(), notification);
 		} catch (TransformationException ex) {

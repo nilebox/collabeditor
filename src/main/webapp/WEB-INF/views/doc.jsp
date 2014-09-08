@@ -59,11 +59,21 @@
 <script src="${root}/resources/js/collab-textarea.js"></script>
 <script src="${root}/resources/js/bootstrap.min.js"></script>
 <script src="${root}/resources/js/bootstrap-editable.min.js"></script>
+<script src="${root}/resources/js/detector.js"></script>
+<script src="${root}/resources/js/md5.js"></script>
 <script type="text/javascript">
 	$(document).ready(function() {
 		$('#doctitle').editable();
+		var clientId = hex_md5(pstfgrpnt());
 		var stompClient = stompConnect("<c:url value='/ws'/>", ${doc.id}, remoteNotify, remoteTitleUpdate);
-		attachTextArea(stompClient, ${doc.id}, ${doc.version}, $("#textarea_container"), $("#collab_textarea"), $("#fake_area"), $("#doctitle"), $("#userlist"));
+		attachTextArea(clientId, stompClient, ${doc.id}, ${doc.version}, $("#textarea_container"), $("#collab_textarea"), $("#fake_area"), $("#doctitle"), $("#userlist"));
+		<c:forEach items="${clients}" var="client">
+		if (clientId !== '${client.clientId}')
+		{
+			addUserBadge('${client.clientId}', '${client.username}');
+			setCaretPosition('${client.clientId}', ${client.caretPosition});
+		}
+		</c:forEach>
 	});
 </script>
 

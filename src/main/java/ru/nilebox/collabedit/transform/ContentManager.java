@@ -11,18 +11,20 @@ import ru.nilebox.collabedit.operations.DeleteOperation;
  * @author nile
  */
 public class ContentManager {
+
 	private final StringBuilder contentBuilder;
-	
+
 	public ContentManager(String content) {
 		this.contentBuilder = new StringBuilder();
-		if (content != null)
+		if (content != null) {
 			this.contentBuilder.append(content);
+		}
 	}
-	
+
 	public String getContent() {
 		return contentBuilder.toString();
 	}
-	
+
 	public void applyOperations(OperationBatch operations) {
 		int index = 0;
 		for (Operation op : operations) {
@@ -41,9 +43,44 @@ public class ContentManager {
 		}
 	}
 
+	public static int transformCaret(int caret, OperationBatch operations) {
+		int index = 0;
+		for (int i = 0; i < operations.size(); i++) {
+			Operation op = operations.get(i);
+			if (op instanceof RetainOperation) {
+				index += op.getLength();
+			} else if (op instanceof InsertOperation) {
+				if (index < caret) {
+					caret = caret + op.getLength();
+				}
+			} else if (op instanceof DeleteOperation) {
+				if (index < caret) {
+					caret = caret - Math.min(op.getLength(), caret - index);
+				}
+			}
+		}
+		return caret;
+	}
+
+	public static int getRemoteCaret(OperationBatch operations) {
+		int index = 0;
+		for (int i = 0; i < operations.size(); i++) {
+			Operation op = operations.get(i);
+			if (op instanceof RetainOperation) {
+				index += op.getLength();
+			} else if (op instanceof InsertOperation) {
+				index += op.getLength();
+			} else if (op instanceof DeleteOperation) {
+				// delete operation doesn't move cursor
+			}			
+		}
+		return index;
+	}
+
+	;	
+
 	@Override
 	public String toString() {
 		return contentBuilder.toString();
 	}
-	
 }
