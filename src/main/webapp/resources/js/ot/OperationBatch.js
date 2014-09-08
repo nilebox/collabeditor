@@ -63,27 +63,41 @@ OperationBatch.prototype.getMainType = function() {
 	return null;
 };
 
-OperationBatch.prototype.canCompose = function(operationBatch) {
+OperationBatch.prototype.canComposeWith = function(operationBatch) {
 	if (this.containers.length !== 2 || operationBatch.containers.length !== 2
 			|| this.getMainType() !== operationBatch.getMainType())
 		return false; // only simple batches are allowed to compose
 	var firstRetain = this.containers[0].retainOp;
 	var secondRetain = operationBatch.containers[0].retainOp;
-	switch(getMainType()) {
+	switch(this.getMainType()) {
 		case 'INSERT':
 			var firstInsert = this.containers[1].insertOp;
-			var secondInsert = operationBatch.containers[1].insertOp;
-			return (firstRetain.length <= secondRetain.length
-					&& firstRetain.length + firstInsert.length >= secondRetain.length)
-					|| (secondRetain.length <= firstRetain.length
-					&& secondRetain.length + secondInsert.length >= firstRetain.length);
+			return secondRetain.length === firstRetain.length + firstInsert.text.length;
 		case 'DELETE':
-			var firstDelete = this.containers[1].deleteOp;
-			var secondDelete = operationBatch.containers[1].deleteOp;
-			return (firstRetain.length <= secondRetain.length
-					&& firstRetain.length + firstDelete.length >= secondRetain.length)
-					|| (secondRetain.length <= firstRetain.length
-					&& secondRetain.length + secondDelete.length >= firstRetain.length);
+			return firstRetain.length === secondRetain.length;
 	}
 };
 
+OperationBatch.prototype.composeWith = function(operationBatch) {
+	var newBatch = new OperationBatch(this.documentVersion);
+	var firstRetain = this.containers[0].retainOp;
+	switch(this.getMainType()) {
+		case 'INSERT':
+			var firstInsert = this.containers[1].insertOp;
+			var secondInsert = operationBatch.containers[1].insertOp;
+			newBatch.add(OperationContainer.createRetain(firstRetain.length));
+			newBatch.add(OperationContainer.createInsert(firstInsert.text + secondInsert.text));
+			break;
+		case 'DELETE':
+			var firstDelete = this.containers[1].deleteOp;
+			var secondDelete = operationBatch.containers[1].deleteOp;
+			newBatch.add(OperationContainer.createRetain(firstRetain.length));
+			newBatch.add(OperationContainer.createDelete(firstDelete.length + secondDelete.length));
+			break;			
+	}
+	return newBatch;
+};
+
+OperationBatch.prototype.getOperations = function() {
+	return this.containers;
+};

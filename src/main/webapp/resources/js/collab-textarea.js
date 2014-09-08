@@ -9,9 +9,8 @@ var _oldVal = null;
 var _oldTitle = null;
 var _docversion = null;
 var _clientId = uuid.v4();
-var _operationQueue = new queue();
-var _lastOperationIndex = -1;
-var _pendingOperationIndex = null;
+var _batchBuffer = new OperationBatchBuffer();
+var _pendingRequestId = null;
 var _clientColors = {};
 var _clientCarets = {};
 var _clientBadges = {};
@@ -96,130 +95,75 @@ function notifyInsert(start, text) {
 	addOperation(op);
 }
 
-function addOperation(op) {
+function addBatch(batch) {
 	// Increment operation index (needed for futher check of approved operations)
-	_lastOperationIndex++;
-	console.log("Operation: " + op);
-	op.version = _docversion;
-	op.operationIndex = _lastOperationIndex;
-	if (_pendingOperationIndex === null) {
+	_lastOperationId++;
+	console.log("Operation: " + batch);
+	batch.baseDocumentVersion = _docversion;
+	if (_pendingRequestId === null) {
 		// Immediately send the operation to server
-		_pendingOperationIndex = _lastOperationIndex;
+		_pendingRequestId = _lastOperationId;
 		stompSendOperation(stompClient, op);
 	} else {
 		// TODO: merge with latest operation in queue of the same type
 		// Add operation to queue
-		_operationQueue.enqueue(op);
+		_batchBuffer.enqueue(op);
 	}
 }
 
-function sendOperationFromQueue() {
-	console.log('queue: ' + _operationQueue);
-	if (_operationQueue.size() > 0) {
-		var op = _operationQueue.dequeue();
-		op.version = _docversion;
-		_pendingOperationIndex = op.operationIndex;
-		stompSendOperation(stompClient, op);
+function sendBatch(batch) {
+	var request = new DocumentChangeRequest(_clientId, _docid, batch);
+	_pendingRequestId = request.requestId;
+	stompSendOperation(stompClient, request);
+}
+
+function sendBatchFromBuffer() {
+	console.log('queue: ' + _batchBuffer);
+	if (_batchBuffer.size() > 0) {
+		var batch = _batchBuffer.dequeue();
+		batch.documentVersion = _docversion;
+		sendBatch(batch);
 	}
 }
 
-function transformRemoteOperation(remoteOp) {
-	//TODO: transform remoteOp and local operations in queue
-	var index;
-	for (index = 0; index < _operationQueue.size(); index++) {
-		var op = _operationQueue.get(index);
-		op.version = remoteOp.version;
-		// remember original positions
-		var opPosition = op.position;
-		var remoteOpPosition = remoteOp.position;
-		// apply transformation to remote operation
-		transformWith(remoteOp, remoteOpPosition, op, opPosition);
-		// apply transformation to local operation
-		transformWith(op, opPosition, remoteOp, remoteOpPosition);
-	}
-}
+function remoteNotify(obj) {
+	var notification = new DocumentChangeNotification(obj);
+	_docversion = notification.newDocumentVersion;
 
-function transformWith(originalOp, originalOpPosition, transformOp, transformOpPosition) {
-	if (transformOp.position < 0)
-		return; //skipped operation	
-
-	switch (transformOp.type) {
-		case 'Insert':
-			if (originalOpPosition >= transformOpPosition) {
-				originalOp.position += transformOp.insertedText.length;
-			}
-			break;
-		case 'Delete':
-			var deleteIntersects = false;
-			if (originalOpPosition.type === 'Delete') {
-				// if current operation's start index is in range of op's delete operation
-				if (originalOpPosition >= transformOpPosition && originalOpPosition < transformOpPosition + transformOp.deleteCount) {
-					deleteIntersects = true;
-					var oldPosition = originalOp.position;
-					originalOp.position = transformOpPosition + transformOp.deleteCount;
-					originalOp.deleteCount -= originalOp.position - oldPosition;
-				}
-				var endIndex = originalOp.position + originalOp.deleteCount - 1;
-				// if current operation's end index is in range of op's delete operation
-				if (originalOpPosition >= transformOpPosition && originalOpPosition < transformOpPosition + transformOp.deleteCount) {
-					deleteIntersects = true;
-					endIndex = transformOpPosition.position - 1;
-					originalOpPosition.deleteCount = endIndex - originalOp.position + 1;
-				}
-				if (originalOp.deleteCount <= 0 || originalOp.position < 0) {
-					originalOp.position = -1;
-					originalOp.deleteCount = 0;
-					return;
-				}
-			}
-
-			if (!deleteIntersects && originalOpPosition >= transformOpPosition) {
-				originalOp.position -= transformOp.deleteCount;
-			}
-			break;
-		default:
-			console.error("Invalid operation type: " + transformOp.type);
-	}
-}
-
-function remoteNotify(op) {
-	_docversion = op.newVersion;
-
-	if (op.clientId === _clientId) {
-		if (op.operationIndex !== _pendingOperationIndex) {
-			console.error("Invalid operation index, not equal to pending: " + _pendingOperationIndex);
+	if (notification.clientId === _clientId) {
+		if (notification.requestId !== _pendingRequestId) {
+			console.error("Invalid operation index, not equal to pending: " + _pendingRequestId);
 			return;
 		}
-		console.log("Received operation confirmation: " + _pendingOperationIndex);
-		_pendingOperationIndex = null;
-		sendOperationFromQueue();
+		console.log("Received operation confirmation: " + _pendingRequestId);
+		_pendingRequestId = null;
+		sendBatchFromBuffer();
 		return;
 	}
-
-	if (op.position < 0)
-		return; //skipped operation
-
-	switch (op.type) {
-		case 'Insert':
-			remoteInsert(op.position, op.insertedText);
-			setCaretPosition(op.clientId, op.position + op.insertedText.length);
-			addUserBadge(op.clientId, op.username);
-			break;
-		case 'Delete':
-			remoteRemove(op.position, op.deleteCount);
-			setCaretPosition(op.clientId, op.position);
-			addUserBadge(op.clientId, op.username);			
-			break;
-		default:
-			console.error("Invalid operation type: " + op.type);
-	}
+	
+	var remoteBatch = transformRemoteBatch(notification.batch);
+	applyRemoteBatch(remoteBatch);
 }
 
-function replaceText(newText, transformCursor) {
-	var elem = _textarea[0]; //get DOM element from jquery object
-	if (transformCursor) {
-		var newSelection = [transformCursor(elem.selectionStart), transformCursor(elem.selectionEnd)];
+function transformRemoteBatch(remoteBatch) {
+	for (i = 0; i < _batchBuffer.size(); i++) {
+		var batch = _batchBuffer.get(i);
+		var transformed = OperationTransformer.transformBatches(remoteBatch, batch);
+		remoteBatch = transformed.first;
+		batch = transformed.second;
+		batch.baseDocumentVersion = remoteBatch.baseDocumentVersion + 1;
+		_batchBuffer.set(i, batch);
 	}
+	return remoteBatch;
+}
+
+function applyRemoteBatch(batch) {
+	var elem = _textarea[0]; //get DOM element from jquery object
+
+	var oldText = _textarea.val().replace(/\r\n/g, '\n');
+	var newText = ContentManager.applyOperations(oldText, batch);
+	
+	var newSelection = [ContentManager.transformCursor(elem.selectionStart, batch), ContentManager.transformCursor(elem.selectionEnd, batch)];
 
 	// Fixate the window's scroll while we set the element's value. Otherwise
 	// the browser scrolls to the element.
@@ -236,30 +180,7 @@ function replaceText(newText, transformCursor) {
 		elem.selectionStart = newSelection[0];
 		elem.selectionEnd = newSelection[1];
 	}
-}
-;
-
-function remoteInsert(pos, text) {
-	var transformCursor = function(cursor) {
-		return pos < cursor ? cursor + text.length : cursor;
-	};
-
-	// Remove any window-style newline characters. Windows inserts these, and
-	// they mess up the generated diff.
-	var prev = _textarea.val().replace(/\r\n/g, '\n');
-	replaceText(prev.slice(0, pos) + text + prev.slice(pos), transformCursor);
-}
-
-function remoteRemove(pos, length) {
-	var transformCursor = function(cursor) {
-		// If the cursor is inside the deleted region, we only want to move back to the start
-		// of the region. Hence the Math.min.
-		return pos < cursor ? cursor - Math.min(length, cursor - pos) : cursor;
-	};
-
-	var prev = _textarea.val().replace(/\r\n/g, '\n');
-	replaceText(prev.slice(0, pos) + prev.slice(pos + length), transformCursor);
-}
+};
 
 function onTitleChanged(e, params) {
 	var newTitle = params.newValue;

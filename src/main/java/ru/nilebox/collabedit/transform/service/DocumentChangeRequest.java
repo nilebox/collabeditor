@@ -2,7 +2,6 @@ package ru.nilebox.collabedit.transform.service;
 
 import java.util.ArrayList;
 import java.util.List;
-import ru.nilebox.collabedit.operations.OperationBatch;
 
 /**
  *
@@ -12,7 +11,7 @@ public class DocumentChangeRequest {
 	private String requestId;
 	private String clientId;
 	private Long documentId;
-	private int documentVersion;
+	private int baseDocumentVersion;
 	private List<OperationContainer> operations = new ArrayList<OperationContainer>();	
 
 	public String getRequestId() {
@@ -39,12 +38,12 @@ public class DocumentChangeRequest {
 		this.documentId = documentId;
 	}
 
-	public int getDocumentVersion() {
-		return documentVersion;
+	public int getBaseDocumentVersion() {
+		return baseDocumentVersion;
 	}
 
-	public void setDocumentVersion(int documentVersion) {
-		this.documentVersion = documentVersion;
+	public void setBaseDocumentVersion(int documentVersion) {
+		this.baseDocumentVersion = documentVersion;
 	}
 
 	public List<OperationContainer> getOperations() {

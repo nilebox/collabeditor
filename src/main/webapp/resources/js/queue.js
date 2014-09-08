@@ -10,6 +10,9 @@ var queue = function() {
 	this.peek = function() {
 		return elements[0];                  
 	};
+	this.last = function() {
+		return elements[elements.length-1];
+	};	
 	this.size = function() {
 		return elements.length;
 	};

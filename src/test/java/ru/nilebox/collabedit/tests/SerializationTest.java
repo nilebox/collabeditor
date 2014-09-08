@@ -28,7 +28,7 @@ public class SerializationTest {
 		request1.setRequestId("1bbfdbd6-dfd0-4932-bf72-7972e173be7e");
 		request1.setClientId("c689c105-3d57-4318-91fa-864ee4d0c78b");
 		request1.setDocumentId(Long.MAX_VALUE);
-		request1.setDocumentVersion(123);
+		request1.setBaseDocumentVersion(123);
 		
 		List<OperationContainer> operations1 = new ArrayList<OperationContainer>();
 		operations1.add(OperationContainer.fromOperation(new RetainOperation(4)));
@@ -45,14 +45,14 @@ public class SerializationTest {
 		sw.close();
 		
 		String output = sw.getBuffer().toString();
-		System.out.println(output);
 		
 		// Check that output is not changed
 		String expected = "{\"requestId\":\"1bbfdbd6-dfd0-4932-bf72-7972e173be7e\","
 				+ "\"clientId\":\"c689c105-3d57-4318-91fa-864ee4d0c78b\","
-				+ "\"documentId\":9223372036854775807,\"documentVersion\":123,"
-				+ "\"operations\":[{\"retain\":{\"length\":4}},{\"insert\":{\"text\":\"text\"}},"
-				+ "{\"delete\":{\"length\":3}}]}";
+				+ "\"documentId\":9223372036854775807,\"baseDocumentVersion\":123,"
+				+ "\"operations\":[{\"retainOp\":{\"length\":4}},"
+				+ "{\"insertOp\":{\"text\":\"text\"}},{\"deleteOp\":{\"length\":3}}]}";
+		System.out.println(output);
 		Assert.assertEquals(output, expected);
 		
 		// Check that properties have correct values after serialization/deserialization
@@ -61,7 +61,7 @@ public class SerializationTest {
 		
 		Assert.assertEquals(request2.getClientId(), request1.getClientId());
 		Assert.assertEquals(request2.getDocumentId(), request1.getDocumentId());
-		Assert.assertEquals(request2.getDocumentVersion(), request1.getDocumentVersion());
+		Assert.assertEquals(request2.getBaseDocumentVersion(), request1.getBaseDocumentVersion());
 		Assert.assertEquals(request2.getRequestId(), request1.getRequestId());
 		Assert.assertNotNull(request2.getOperations());
 		Assert.assertEquals(request2.getOperations().size(), request1.getOperations().size());

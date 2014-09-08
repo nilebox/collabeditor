@@ -18,15 +18,15 @@ import ru.nilebox.collabedit.util.Pair;
  */
 public class TransformationTest {
 	
-	private static RetainOperation retain(int length) {
+	private static RetainOperation retainOp(int length) {
 		return new RetainOperation(length);
 	}
 	
-	private static InsertOperation insert(String text) {
+	private static InsertOperation insertOp(String text) {
 		return new InsertOperation(text);
 	}
 	
-	private static DeleteOperation delete(int length) {
+	private static DeleteOperation deleteOp(int length) {
 		return new DeleteOperation(length);
 	}
 	
@@ -57,8 +57,8 @@ public class TransformationTest {
 	public void simpleTransform() throws TransformationException {
 		String original = "A B C D E";
 		
-		OperationBatch first = operationBatch(insert("a "), retain(2), insert("c "), retain(2), delete(4));
-		OperationBatch second = operationBatch(insert("b "), retain(6), insert("d "), retain(2), delete(2));
+		OperationBatch first = operationBatch(insertOp("a "), retainOp(2), insertOp("c "), retainOp(2), deleteOp(4));
+		OperationBatch second = operationBatch(insertOp("b "), retainOp(6), insertOp("d "), retainOp(2), deleteOp(2));
 		
 		Pair<OperationBatch> transform = OperationTransformer.transformBatches(first, second);		
 		
@@ -83,8 +83,8 @@ public class TransformationTest {
 	public void splitDeleteTransform() throws TransformationException {
 		String original = "ABCDEF";
 		
-		OperationBatch first = operationBatch(retain(3), insert("x"));
-		OperationBatch second = operationBatch(retain(2), delete(3));
+		OperationBatch first = operationBatch(retainOp(3), insertOp("x"));
+		OperationBatch second = operationBatch(retainOp(2), deleteOp(3));
 		
 		checkTransform(original, first, second, "ABxF");
 	}
@@ -93,8 +93,8 @@ public class TransformationTest {
 	public void simultaneousDeleteTransform() throws TransformationException {
 		String original = "ABCDEF";
 		
-		OperationBatch first = operationBatch(retain(2), delete(3));
-		OperationBatch second = operationBatch(retain(2), delete(2));
+		OperationBatch first = operationBatch(retainOp(2), deleteOp(3));
+		OperationBatch second = operationBatch(retainOp(2), deleteOp(2));
 		
 		checkTransform(original, first, second, "ABF");
 	}	
@@ -102,10 +102,10 @@ public class TransformationTest {
 	@Test
 	public void chainTransform() throws TransformationException {
 		String original = "ABCDEF";
-		OperationBatch first = operationBatch(retain(3), insert("x"));
-		OperationBatch second = operationBatch(retain(3), insert("y"));
-		OperationBatch third = operationBatch(retain(3), insert("z"));
-		OperationBatch fourth = operationBatch(retain(2), delete(3));
+		OperationBatch first = operationBatch(retainOp(3), insertOp("x"));
+		OperationBatch second = operationBatch(retainOp(3), insertOp("y"));
+		OperationBatch third = operationBatch(retainOp(3), insertOp("z"));
+		OperationBatch fourth = operationBatch(retainOp(2), deleteOp(3));
 		
 		second = OperationTransformer.transformBatches(first, second).getSecond();
 		

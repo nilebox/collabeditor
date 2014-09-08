@@ -9,9 +9,12 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 import ru.nilebox.collabedit.dao.DocumentRepository;
 import ru.nilebox.collabedit.model.TitleUpdate;
-import ru.nilebox.collabedit.old.transform.OperationProcessor;
-import ru.nilebox.collabedit.old.transform.OperationOld;
+import ru.nilebox.collabedit.operations.DocumentManager;
+import ru.nilebox.collabedit.operations.DocumentManagerRepository;
+import ru.nilebox.collabedit.operations.OperationBatch;
 import ru.nilebox.collabedit.transform.TransformationException;
+import ru.nilebox.collabedit.transform.service.DocumentChangeNotification;
+import ru.nilebox.collabedit.transform.service.DocumentChangeRequest;
 
 /**
  *
@@ -25,7 +28,7 @@ public class CollabController {
 	DocumentRepository docRepo;
 	
 	@Autowired
-	OperationProcessor operationProcessor;	
+	DocumentManagerRepository documentManagerRepo;	
 	
 	private SimpMessagingTemplate template;
 
@@ -35,21 +38,24 @@ public class CollabController {
     }
 
 	@MessageMapping("/operation")
-	public void applyOperation(OperationOld operation, Principal principal) {
-		logger.info("Received data: " + operation);
+	public void applyOperation(DocumentChangeRequest request, Principal principal) {
+		logger.info("Received data: " + request);
 		try {
-			operationProcessor.applyOperation(operation);
-			operation.setUsername(principal.getName());
-			template.convertAndSend("/topic/operation/" + operation.getDocumentId(), operation);
+			DocumentManager documentManager =  documentManagerRepo.getDocumentManager(request.getDocumentId());
+			OperationBatch batch = OperationBatch.fromDocumentChangeRequest(request);
+			documentManager.applyBatch(request.getDocumentId(), batch);
+			DocumentChangeNotification notification = DocumentChangeNotification.create(request, batch, principal);
+			template.convertAndSend("/topic/operation/" + request.getDocumentId(), notification);
 		} catch (TransformationException ex) {
-			logger.error("Error processing diff: " + operation, ex);
+			logger.error("Error processing diff: " + request, ex);
 		}
 	}
 	
 	@MessageMapping("/title")
 	public void updateTitle(TitleUpdate update, Principal principal) {
 		logger.info("Received data: " + update);
-		operationProcessor.applyTitle(update);
+		DocumentManager documentManager =  documentManagerRepo.getDocumentManager(update.getDocumentId());
+		documentManager.applyTitle(update);
 		template.convertAndSend("/topic/title/" + update.getDocumentId(), update);
 	}
 	

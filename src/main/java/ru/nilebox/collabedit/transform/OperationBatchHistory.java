@@ -21,7 +21,7 @@ public class OperationBatchHistory {
 		Iterator<OperationBatch> it = batches.descendingIterator();
 		while (it.hasNext()) {
 			OperationBatch batch = it.next();
-			if (batch.getDocumentVersion() < version)
+			if (batch.getBaseDocumentVersion() < version)
 				break; //there are no more conflicting batches
 			result.add(batch);
 		}

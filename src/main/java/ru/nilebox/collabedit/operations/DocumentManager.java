@@ -41,7 +41,7 @@ public class DocumentManager {
 	}
 	
 	public void applyBatch(Long documentId, OperationBatch batch) throws TransformationException {
-		List<OperationBatch> diffBatches = history.getBatchesForDifference(batch.getDocumentVersion());
+		List<OperationBatch> diffBatches = history.getBatchesForDifference(batch.getBaseDocumentVersion());
 		for (OperationBatch b : diffBatches) {
 			// transform B to B'
 			batch = OperationTransformer.transformBatches(batch, b).getFirst();
@@ -57,7 +57,7 @@ public class DocumentManager {
 			doc.setVersion(doc.getVersion() + 1);
 			doc = docRepo.save(doc);
 			this.document = doc;
-			batch.setDocumentVersion(doc.getVersion());
+			batch.setBaseDocumentVersion(doc.getVersion() - 1);
 		}
 		
 		// add to history - may be needed for "merging" edits from multiple clients
