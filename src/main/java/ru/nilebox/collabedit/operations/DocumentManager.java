@@ -18,40 +18,45 @@ import ru.nilebox.collabedit.transform.TransformationException;
  * @author nile
  */
 public class DocumentManager {
-	@Autowired
-	DocumentRepository docRepo;
+
+	private final Long documentId;
+	private final DocumentRepository docRepo;
 	
-	private ConcurrentMap<Long, Document> docs = new ConcurrentHashMap<Long, Document>();
-	private ConcurrentMap<Long, OperationBatchHistory> docHistory = new ConcurrentHashMap<Long, OperationBatchHistory>();
-	private ConcurrentMap<Long, ContentManager> contents = new ConcurrentHashMap<Long, ContentManager>();
+	private Document document;
+	private final OperationBatchHistory history = new OperationBatchHistory();
+	private ContentManager contentManager;
+	
+	public DocumentManager(Long documentId, DocumentRepository docRepo) {
+		this.documentId = documentId;
+		this.docRepo = docRepo;
+	}
 	
 	public void applyTitle(TitleUpdate update) {
-		Document doc = getDocument(update.getDocumentId());
+		Document doc = getDocument();
 		synchronized(this) {
 			doc.setTitle(update.getTitle());
 			doc = docRepo.save(doc);
-			docs.put(update.getDocumentId(), doc);			
+			this.document = doc;
 		}
 	}
 	
 	public void applyBatch(Long documentId, OperationBatch batch) throws TransformationException {
-		OperationBatchHistory history = getBatchHistory(documentId);
 		List<OperationBatch> diffBatches = history.getBatchesForDifference(batch.getDocumentVersion());
 		for (OperationBatch b : diffBatches) {
 			// transform B to B'
 			batch = DocumentTransformer.transformBatches(batch, b).getFirst();
 		}
 		
-		ContentManager contentManager = getContentManager(documentId);
+		ContentManager contentManager = getContentManager();
 		contentManager.applyOperations(batch);
 		
-		Document doc = getDocument(documentId);
+		Document doc = getDocument();
 		synchronized(this) {
 			//TODO: bufferize in memory, flush to database by timeout?
-			doc.setContents(contents.toString());
+			doc.setContents(contentManager.toString());
 			doc.setVersion(doc.getVersion() + 1);
 			doc = docRepo.save(doc);
-			docs.put(documentId, doc);
+			this.document = doc;
 			batch.setDocumentVersion(doc.getVersion());
 		}
 		
@@ -59,39 +64,19 @@ public class DocumentManager {
 		history.addBatch(batch);
 	}
 	
-	public Document getDocument(Long docId) {
-		Document doc = docs.get(docId);
-		if (doc == null) {
-			Document newDoc = docRepo.findOne(docId);
-			doc = docs.putIfAbsent(docId, newDoc);
-			if (doc == null)
-				doc = newDoc;
+	public Document getDocument() {
+		if (document == null) {
+			document = docRepo.findOne(documentId);
 		}
-		return doc;
+		return document;
 	}	
 	
-	private OperationBatchHistory getBatchHistory(Long docId) {
-		OperationBatchHistory history = docHistory.get(docId);
-		if (history == null) {
-			Document doc = getDocument(docId);
-			OperationBatchHistory newHistory = new OperationBatchHistory();
-			history = docHistory.putIfAbsent(docId, newHistory);
-			if (history == null)
-				history = newHistory;
+	private ContentManager getContentManager() {
+		if (contentManager == null) {
+			Document doc = getDocument();
+			contentManager = new ContentManager(doc.getContents());
 		}
-		return history;
-	}
-	
-	private ContentManager getContentManager(Long docId) {
-		ContentManager content = contents.get(docId);
-		if (content == null) {
-			Document doc = getDocument(docId);
-			ContentManager newContent = new ContentManager(doc.getContents());
-			content = contents.putIfAbsent(docId, newContent);
-			if (content == null)
-				content = newContent;
-		}
-		return content;
+		return contentManager;
 	}	
 	
 }
