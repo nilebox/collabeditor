@@ -15,13 +15,6 @@ var _clientColors = {};
 var _clientCarets = {};
 var _clientBadges = {};
 
-String.prototype.insert = function(index, string) {
-	if (index > 0)
-		return this.substring(0, index) + string + this.substring(index, this.length);
-	else
-		return string + this;
-};
-
 function attachTextArea(stompClient, docid, docversion, container, textarea, fakearea, title, userlist) {
 	_stompClient = stompClient;
 	_docid = docid;
@@ -73,12 +66,10 @@ function notifyRemove(start, length) {
 	console.log("new text: " + newText);
 
 	//send operation to server
-	var op = {'documentId': _docid,
-		'clientId': _clientId,
-		'type': 'Delete',
-		'position': start,
-		'deleteCount': length};
-	addOperation(op);
+	var batch = new OperationBatch(_docversion);
+	batch.add(OperationContainer.createRetain(start));
+	batch.add(OperationContainer.createDelete(length));
+	addBatch(batch);
 }
 
 function notifyInsert(start, text) {
@@ -87,34 +78,29 @@ function notifyInsert(start, text) {
 	console.log("new text: " + newText);
 
 	//send operation to server
-	var op = {'documentId': _docid,
-		'clientId': _clientId,
-		'type': 'Insert',
-		'position': start,
-		'insertedText': text};
-	addOperation(op);
+	var batch = new OperationBatch(_docversion);
+	batch.add(OperationContainer.createRetain(start));
+	batch.add(OperationContainer.createInsert(text));
+	addBatch(batch);
 }
 
 function addBatch(batch) {
-	// Increment operation index (needed for futher check of approved operations)
-	_lastOperationId++;
 	console.log("Operation: " + batch);
 	batch.baseDocumentVersion = _docversion;
 	if (_pendingRequestId === null) {
 		// Immediately send the operation to server
-		_pendingRequestId = _lastOperationId;
-		stompSendOperation(stompClient, op);
+		sendBatch(batch);
 	} else {
 		// TODO: merge with latest operation in queue of the same type
 		// Add operation to queue
-		_batchBuffer.enqueue(op);
+		_batchBuffer.enqueue(batch);
 	}
 }
 
 function sendBatch(batch) {
 	var request = new DocumentChangeRequest(_clientId, _docid, batch);
 	_pendingRequestId = request.requestId;
-	stompSendOperation(stompClient, request);
+	stompSendOperation(_stompClient, request);
 }
 
 function sendBatchFromBuffer() {
@@ -127,6 +113,7 @@ function sendBatchFromBuffer() {
 }
 
 function remoteNotify(obj) {
+	console.log("notification: " + obj);
 	var notification = new DocumentChangeNotification(obj);
 	_docversion = notification.newDocumentVersion;
 
@@ -143,6 +130,7 @@ function remoteNotify(obj) {
 	
 	var remoteBatch = transformRemoteBatch(notification.batch);
 	applyRemoteBatch(remoteBatch);
+	showRemoteCursor(notification.clientId, notification.username, remoteBatch);	
 }
 
 function transformRemoteBatch(remoteBatch) {
@@ -202,6 +190,12 @@ function remoteTitleUpdate(titleUpdate) {
 		return; // skip own updates
 	_oldTitle = titleUpdate.title;
 	_titleField.editable('setValue', titleUpdate.title);
+}
+
+function showRemoteCursor(clientId, username, batch) {
+	addUserBadge(clientId, username);
+	var remoteCursor = ContentManager.getRemoteCursor(batch);
+	setCaretPosition(clientId, remoteCursor);
 }
 
 function getClientColor(clientId) {

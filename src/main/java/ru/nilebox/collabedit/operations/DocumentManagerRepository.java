@@ -17,12 +17,20 @@ public class DocumentManagerRepository {
 	@Autowired
 	DocumentRepository docRepo;
 	
-	private ConcurrentMap<Long, DocumentManager> managers = new ConcurrentHashMap<Long, DocumentManager>();
+	private ConcurrentMap<Long, DocumentEditor> managers = new ConcurrentHashMap<Long, DocumentEditor>();
 	
-	public DocumentManager getDocumentManager(Long documentId) {
-		DocumentManager manager = managers.get(documentId);
+	public DocumentEditor createDocument() {
+		Document document = new Document();
+		document = docRepo.save(document);
+		DocumentEditor manager = new DocumentEditor(document.getId(), docRepo);
+		managers.put(document.getId(), manager);
+		return manager;
+	}
+	
+	public DocumentEditor getDocumentManager(Long documentId) {
+		DocumentEditor manager = managers.get(documentId);
 		if (manager == null) {
-			DocumentManager newManager = new DocumentManager(documentId, docRepo);
+			DocumentEditor newManager = new DocumentEditor(documentId, docRepo);
 			manager = managers.putIfAbsent(documentId, newManager);
 			if (manager == null)
 				manager = newManager;

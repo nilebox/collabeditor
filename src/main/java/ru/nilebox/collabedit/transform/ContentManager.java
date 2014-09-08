@@ -43,7 +43,7 @@ public class ContentManager {
 
 	@Override
 	public String toString() {
-		return "DocumentProcessor{" + "contentBuilder=" + contentBuilder + '}';
+		return contentBuilder.toString();
 	}
 	
 }

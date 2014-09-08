@@ -9,7 +9,7 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 import ru.nilebox.collabedit.dao.DocumentRepository;
 import ru.nilebox.collabedit.model.TitleUpdate;
-import ru.nilebox.collabedit.operations.DocumentManager;
+import ru.nilebox.collabedit.operations.DocumentEditor;
 import ru.nilebox.collabedit.operations.DocumentManagerRepository;
 import ru.nilebox.collabedit.operations.OperationBatch;
 import ru.nilebox.collabedit.transform.TransformationException;
@@ -25,9 +25,6 @@ public class CollabController {
 	private final static Logger logger = LoggerFactory.getLogger(CollabController.class);
 
 	@Autowired
-	DocumentRepository docRepo;
-	
-	@Autowired
 	DocumentManagerRepository documentManagerRepo;	
 	
 	private SimpMessagingTemplate template;
@@ -41,7 +38,7 @@ public class CollabController {
 	public void applyOperation(DocumentChangeRequest request, Principal principal) {
 		logger.info("Received data: " + request);
 		try {
-			DocumentManager documentManager =  documentManagerRepo.getDocumentManager(request.getDocumentId());
+			DocumentEditor documentManager =  documentManagerRepo.getDocumentManager(request.getDocumentId());
 			OperationBatch batch = OperationBatch.fromDocumentChangeRequest(request);
 			documentManager.applyBatch(request.getDocumentId(), batch);
 			DocumentChangeNotification notification = DocumentChangeNotification.create(request, batch, principal);
@@ -54,7 +51,7 @@ public class CollabController {
 	@MessageMapping("/title")
 	public void updateTitle(TitleUpdate update, Principal principal) {
 		logger.info("Received data: " + update);
-		DocumentManager documentManager =  documentManagerRepo.getDocumentManager(update.getDocumentId());
+		DocumentEditor documentManager =  documentManagerRepo.getDocumentManager(update.getDocumentId());
 		documentManager.applyTitle(update);
 		template.convertAndSend("/topic/title/" + update.getDocumentId(), update);
 	}

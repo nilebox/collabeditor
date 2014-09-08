@@ -64,3 +64,23 @@ ContentManager.transformCursor = function(cursor, batch) {
 	}
 	return cursor;
 };
+
+ContentManager.getRemoteCursor = function(batch) {
+	var operations = batch.containers;
+	var index = 0;
+	for (var i = 0; i < operations.length; i++) {
+		var op = operations[i];
+		switch (op.getType()) {
+			case 'RETAIN':
+				index += op.getLength();
+				continue;
+			case 'INSERT':
+				index += op.getLength();
+				continue;
+			case 'DELETE':
+				// delete operation doesn't move cursor
+				continue;
+		}
+	}
+	return index;
+};

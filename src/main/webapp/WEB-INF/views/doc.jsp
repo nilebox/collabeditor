@@ -41,6 +41,15 @@
     </div>
 </div>
 
+<script src="${root}/resources/js/ot/ContentManager.js"></script>
+<script src="${root}/resources/js/ot/DocumentChangeNotification.js"></script>
+<script src="${root}/resources/js/ot/DocumentChangeRequest.js"></script>
+<script src="${root}/resources/js/ot/OperationBatch.js"></script>
+<script src="${root}/resources/js/ot/OperationBatchBuffer.js"></script>
+<script src="${root}/resources/js/ot/OperationContainer.js"></script>
+<script src="${root}/resources/js/ot/OperationTransformer.js"></script>
+<script src="${root}/resources/js/ot/Pair.js"></script>
+<script src="${root}/resources/js/ot/Utils.js"></script>
 <script src="${root}/resources/js/sockjs-0.3.4.js"></script>
 <script src="${root}/resources/js/stomp.js"></script>
 <script src="${root}/resources/js/uuid.js"></script>

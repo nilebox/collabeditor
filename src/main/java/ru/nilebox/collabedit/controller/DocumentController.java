@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import ru.nilebox.collabedit.dao.DocumentRepository;
 import ru.nilebox.collabedit.model.Document;
+import ru.nilebox.collabedit.operations.DocumentEditor;
+import ru.nilebox.collabedit.operations.DocumentManagerRepository;
 
 /**
  *
@@ -24,7 +26,7 @@ public class DocumentController {
 	private final static Logger logger = LoggerFactory.getLogger(DocumentController.class);
 
 	@Autowired
-	DocumentRepository docRepo;
+	DocumentManagerRepository documentManagerRepo;	
 	
 	private SimpMessagingTemplate template;
 
@@ -38,8 +40,8 @@ public class DocumentController {
 
 		ModelAndView mav = new ModelAndView("doc");
 		
-		Document document = docRepo.findOne(id);
-		mav.addObject("doc", document);
+		DocumentEditor documentManager = documentManagerRepo.getDocumentManager(id);
+		mav.addObject("doc", documentManager.getDocument());
 		mav.addObject("principal", principal);
 
 		return mav;
@@ -47,10 +49,9 @@ public class DocumentController {
 	
 	@RequestMapping(value = "create.html", method = RequestMethod.GET)
 	public String createDocument(Principal principal) {
-		Document document = new Document();
-		document = docRepo.save(document);
+		DocumentEditor documentManager = documentManagerRepo.createDocument();
 
-		return "redirect:/docs/edit.html?id=" + document.getId();
+		return "redirect:/docs/edit.html?id=" + documentManager.getDocumentId();
 	}
 	
 }

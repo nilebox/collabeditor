@@ -17,18 +17,21 @@ import ru.nilebox.collabedit.transform.TransformationException;
  *
  * @author nile
  */
-public class DocumentManager {
+public class DocumentEditor {
 
 	private final Long documentId;
 	private final DocumentRepository docRepo;
-	
 	private Document document;
 	private final OperationBatchHistory history = new OperationBatchHistory();
 	private ContentManager contentManager;
 	
-	public DocumentManager(Long documentId, DocumentRepository docRepo) {
+	public DocumentEditor(Long documentId, DocumentRepository docRepo) {
 		this.documentId = documentId;
 		this.docRepo = docRepo;
+	}
+
+	public Long getDocumentId() {
+		return documentId;
 	}
 	
 	public void applyTitle(TitleUpdate update) {
@@ -53,7 +56,7 @@ public class DocumentManager {
 		Document doc = getDocument();
 		synchronized(this) {
 			//TODO: bufferize in memory, flush to database by timeout?
-			doc.setContents(contentManager.toString());
+			doc.setContents(contentManager.getContent());
 			doc.setVersion(doc.getVersion() + 1);
 			doc = docRepo.save(doc);
 			this.document = doc;

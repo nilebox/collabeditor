@@ -66,6 +66,19 @@ OperationContainer.createInsert = function(text) {
 	return container;	
 };
 
+OperationContainer.fromObject = function(obj) {
+	var container = new OperationContainer();
+	
+	if (obj.retainOp && obj.retainOp !== null)
+		container.retainOp = new RetainOperation(obj.retainOp.length);
+	else if (obj.insertOp && obj.insertOp !== null)
+		container.insertOp = new InsertOperation(obj.insertOp.text);
+	else if (obj.deleteOp && obj.deleteOp !== null)
+		container.deleteOp = new DeleteOperation(obj.deleteOp.length);
+	return container;
+}
+
+
 function RetainOperation(length) {
 	this.length = length;
 };
