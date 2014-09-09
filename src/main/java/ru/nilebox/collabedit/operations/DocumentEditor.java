@@ -8,6 +8,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import ru.nilebox.collabedit.dao.DocumentRepository;
+import ru.nilebox.collabedit.model.CaretUpdate;
 import ru.nilebox.collabedit.model.Document;
 import ru.nilebox.collabedit.model.TitleUpdate;
 import ru.nilebox.collabedit.old.transform.OperationHistory;
@@ -81,7 +82,11 @@ public class DocumentEditor {
 		}
 	}
 	
-	public ClientInfo setClientCaret(String clientId, String username, int caretPosition) {
+	public void applyClientCaret(CaretUpdate update) {
+		setClientCaret(update.getClientId(), update.getUsername(), update.getCaretPosition());
+	}
+	
+	private ClientInfo setClientCaret(String clientId, String username, int caretPosition) {
 		ClientInfo client = getClient(clientId, username);
 		client.setCaretPosition(caretPosition);
 		client.setLastActivity(new Date());

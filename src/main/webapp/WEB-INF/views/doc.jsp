@@ -41,6 +41,7 @@
     </div>
 </div>
 
+<script src="${root}/resources/js/operations/CaretUpdate.js"></script>
 <script src="${root}/resources/js/operations/ContentManager.js"></script>
 <script src="${root}/resources/js/operations/DocumentChangeNotification.js"></script>
 <script src="${root}/resources/js/operations/DocumentChangeRequest.js"></script>
@@ -72,7 +73,8 @@
 		var collaborationController = new CollaborationController(clientId, messageBroker, ${doc.id}, ${doc.version}, elementController);
 		var remoteNotify = collaborationController.remoteNotify.bind(collaborationController);
 		var remoteTitleUpdate = collaborationController.remoteTitleUpdate.bind(collaborationController);
-		messageBroker.connect(${doc.id}, remoteNotify, remoteTitleUpdate);
+		var remoteCaretUpdate = collaborationController.remoteCaretUpdate.bind(collaborationController);		
+		messageBroker.connect(${doc.id}, remoteNotify, remoteTitleUpdate, remoteCaretUpdate);
 		<c:forEach items="${clients}" var="client">
 		if (clientId !== '${client.clientId}')
 		{

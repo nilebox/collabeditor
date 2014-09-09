@@ -7,8 +7,18 @@ function UIElementController(container, textArea, fakeArea, titleArea, userArea)
 	
 	this.oldVal = this.textArea.val();
 	this.oldTitle = this.titleArea.text();
+	this.oldCaretPosition = 0;
 	this.titleArea.on('save', this.handleTitleChanged.bind(this));
+	// handle text changes
 	this.textArea.on('change keyup keydown cut paste textInput', this.handleTextChanged.bind(this));
+	// handle caret moves
+	var timer = 0;
+	var caretHandler = function() {
+		clearTimeout(timer);
+		timer = setTimeout(this.handleCaretChanged.bind(this), 10);
+	};
+	this.textArea.on("input keydown keyup propertychange click paste cut copy mousedown mouseup change",
+		caretHandler.bind(this));
 	
 	this.clientColors = {};
 	this.clientCarets = {};
@@ -31,6 +41,12 @@ UIElementController.prototype.onInsert = function(callback) {
 	// Make sure the callback is a function
     if (typeof callback === "function")
 		this.insertCallback = callback;
+};
+
+UIElementController.prototype.onCaretChanged = function(callback) {
+	// Make sure the callback is a function
+    if (typeof callback === "function")
+		this.caretCallback = callback;
 };
 
 UIElementController.prototype.handleTitleChanged = function(e, params) {
@@ -67,6 +83,14 @@ UIElementController.prototype.handleTextChanged = function() {
 		this.insertCallback(commonStart, newVal.slice(commonStart, newVal.length - commonEnd));
 	}
 	this.oldVal = newVal;
+};
+
+UIElementController.prototype.handleCaretChanged = function() {
+	var caretPosition = UIElementController.getCaretPosition(this.textArea[0]);
+	if (this.oldCaretPosition === caretPosition)
+		return;
+	this.oldCaretPosition = caretPosition;
+	this.caretCallback(caretPosition);
 };
 
 UIElementController.prototype.getText = function() {
@@ -177,4 +201,22 @@ UIElementController.getAbsolutePosition = function(e) {
 		e = e.offsetParent;
 	}
 	return [x, y];
+};
+
+UIElementController.getCaretPosition = function(e) {
+	if (e.selectionStart) {
+		return e.selectionStart;
+	} else if (document.selection) {
+		//el.focus();
+		var r = document.selection.createRange();
+		if (r === null)
+			return 0;
+
+		var re = e.createTextRange(), rc = re.duplicate();
+		re.moveToBookmark(r.getBookmark());
+		rc.setEndPoint('EndToStart', re);
+
+		return rc.text.length;
+	}
+	return 0;
 };

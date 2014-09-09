@@ -9,6 +9,7 @@ function CollaborationController(clientId, messageBroker, documentId, documentVe
 	this.elementController.onTitleChanged(this.notifyTitle.bind(this));
 	this.elementController.onRemove(this.notifyRemove.bind(this));
 	this.elementController.onInsert(this.notifyInsert.bind(this));
+	this.elementController.onCaretChanged(this.notifyCaret.bind(this));
 }
 
 CollaborationController.prototype.notifyTitle = function(newTitle) {
@@ -30,6 +31,14 @@ CollaborationController.prototype.notifyInsert = function(start, text) {
 	batch.add(OperationContainer.createRetain(start));
 	batch.add(OperationContainer.createInsert(text));
 	this.addBatch(batch);
+};
+
+CollaborationController.prototype.notifyCaret = function(newPosition) {
+	if (this.pendingRequestId !== null)
+		return; // client states are different
+	//send operation to server
+	var caretUpdate = new CaretUpdate(this.clientId, this.documentId, newPosition);
+	this.messageBroker.sendCaret(caretUpdate);
 };
 
 CollaborationController.prototype.addBatch = function(batch) {
@@ -103,6 +112,14 @@ CollaborationController.prototype.remoteTitleUpdate = function(titleUpdate) {
 	if (titleUpdate.clientId === this.clientId)
 		return; // skip own updates
 	this.elementController.setTitle(titleUpdate.title);
+};
+
+CollaborationController.prototype.remoteCaretUpdate = function(caretUpdate) {
+	if (caretUpdate.clientId === this.clientId)
+		return; // skip own updates
+	if (this.pendingRequestId !== null)
+		return; // client states are different
+	this.elementController.showRemoteCaret(caretUpdate.clientId, caretUpdate.username, caretUpdate.caretPosition);
 };
 
 CollaborationController.prototype.showRemoteCaret = function(clientId, username, batch) {

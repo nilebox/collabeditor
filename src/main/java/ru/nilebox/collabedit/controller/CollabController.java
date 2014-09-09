@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
-import ru.nilebox.collabedit.dao.DocumentRepository;
+import ru.nilebox.collabedit.model.CaretUpdate;
 import ru.nilebox.collabedit.model.TitleUpdate;
 import ru.nilebox.collabedit.operations.DocumentEditor;
 import ru.nilebox.collabedit.operations.DocumentManagerRepository;
@@ -55,6 +55,15 @@ public class CollabController {
 		DocumentEditor documentManager =  documentManagerRepo.getDocumentManager(update.getDocumentId());
 		documentManager.applyTitle(update);
 		template.convertAndSend("/topic/title/" + update.getDocumentId(), update);
+	}
+	
+	@MessageMapping("/caret")
+	public void updateCaret(CaretUpdate update, Principal principal) {
+		logger.info("Received data: " + update);
+		update.setUsername(principal.getName());
+		DocumentEditor documentManager =  documentManagerRepo.getDocumentManager(update.getDocumentId());
+		documentManager.applyClientCaret(update);
+		template.convertAndSend("/topic/caret/" + update.getDocumentId(), update);
 	}
 	
 }
