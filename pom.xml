@@ -191,6 +191,13 @@
 			<artifactId>jackson-core</artifactId>
 			<version>2.3.3</version>
 		</dependency>
+		
+		<!-- Cache data structures -->
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+			<version>18.0</version>
+		</dependency>		
 
 		<!-- TestNG -->
 		<dependency>
