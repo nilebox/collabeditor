@@ -86,7 +86,8 @@
 <script type="text/javascript">
 	$(document).ready(function() {
 		$('#title_area').editable();
-		var clientId = hex_md5(pstfgrpnt()); // browser-"unique" client id
+		//var clientId = hex_md5(pstfgrpnt()); // browser-"unique" client id
+		var clientId = uuid.v4();
 		var messageBroker = new MessageBroker("<c:url value='/ws'/>");
 		var elementController = new UIElementController($("#text_container"), $("#text_area"), $("#fake_area"), $("#title_area"), $("#user_area"), $("#reloadModal"));
 		var collaborationController = new CollaborationController(clientId, messageBroker, ${doc.id}, ${doc.version}, elementController);

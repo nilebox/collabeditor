@@ -3,7 +3,9 @@
 <%@ taglib prefix="sec"
 	uri="http://www.springframework.org/security/tags"%>
 <c:set var="add_action">
-	<c:url value="/users/create.html" />
+	<c:url value="/users/edit.html" >
+		<c:param name="userId">-1</c:param>
+	</c:url>
 </c:set>
 <c:if test="${empty root}">
 	<c:set var="root" value="${pageContext.request.contextPath}" />
@@ -15,7 +17,7 @@
 <div class="list-group">
 <c:forEach var="user" items="${u}" varStatus="status">
 	<c:url var="users_action" value="/users/edit.html">
-		<c:param name="user_id" value="${user.id}"></c:param>
+		<c:param name="userId" value="${user.id}"></c:param>
 	</c:url>
   <a href="${users_action}" class="list-group-item">
     ${user.username}

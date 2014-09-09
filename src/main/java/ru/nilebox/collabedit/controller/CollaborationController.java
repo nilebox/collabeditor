@@ -41,7 +41,7 @@ public class CollaborationController {
 		try {
 			DocumentEditor documentEditor =  documentEditorRepo.getDocumentEditor(request.getDocumentId());
 			OperationBatch batch = OperationBatch.fromDocumentChangeRequest(request);
-			documentEditor.applyBatch(request.getDocumentId(), batch);
+			documentEditor.applyBatch(request.getDocumentId(), batch, principal);
 			documentEditor.updateClientCarets(request.getClientId(), principal.getName(), batch);
 			DocumentChangeNotification notification = DocumentChangeNotification.create(request, batch, principal);
 			template.convertAndSend("/topic/operation/" + request.getDocumentId(), notification);
@@ -54,7 +54,7 @@ public class CollaborationController {
 	public void updateTitle(TitleUpdate update, Principal principal) {
 		logger.info("Received data: " + update);
 		DocumentEditor documentEditor =  documentEditorRepo.getDocumentEditor(update.getDocumentId());
-		documentEditor.applyTitle(update);
+		documentEditor.applyTitle(update, principal);
 		template.convertAndSend("/topic/title/" + update.getDocumentId(), update);
 	}
 	

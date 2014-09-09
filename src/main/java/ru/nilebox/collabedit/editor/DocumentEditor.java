@@ -4,6 +4,7 @@ import ru.nilebox.collabedit.editor.operations.OperationBatch;
 import ru.nilebox.collabedit.messages.ClientInfo;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
+import java.security.Principal;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -37,16 +38,17 @@ public class DocumentEditor {
 		return documentId;
 	}
 	
-	public void applyTitle(TitleUpdate update) {
+	public void applyTitle(TitleUpdate update, Principal principal) {
 		Document doc = getDocument();
 		synchronized(this) {
 			doc.setTitle(update.getTitle());
+			doc.setModifiedBy(principal.getName());
 			doc = docRepo.save(doc);
 			this.document = doc;
 		}
 	}
 	
-	public void applyBatch(Long documentId, OperationBatch batch) throws TransformationException {
+	public void applyBatch(Long documentId, OperationBatch batch, Principal principal) throws TransformationException {
 		List<OperationBatch> diffBatches = history.getBatchesForDifference(batch.getBaseDocumentVersion());
 		for (OperationBatch b : diffBatches) {
 			// transform B to B'
@@ -60,6 +62,7 @@ public class DocumentEditor {
 		synchronized(this) {
 			doc.setContents(contentManager.getContent());
 			doc.setVersion(doc.getVersion() + 1);
+			doc.setModifiedBy(principal.getName());
 			doc = docRepo.save(doc);
 			this.document = doc;
 			batch.setBaseDocumentVersion(doc.getVersion() - 1);

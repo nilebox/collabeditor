@@ -42,7 +42,8 @@ public class CollabEditUserDetailsService implements UserDetailsService {
 		User u = null;
 		if (username.equals(this.username)) {
 			// try to load user from config to access with admin privileges
-			u = new User(username, password, User.ROLE_ADMIN );
+			u = new User(username, password, User.ROLE_ADMIN);
+			u.setId(Long.MIN_VALUE);
 			logger.info("User logged in as a default user with ADMIN privileges. {}", u);
 
 		}
