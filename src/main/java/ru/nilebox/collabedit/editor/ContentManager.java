@@ -38,7 +38,10 @@ public class ContentManager {
 			} else if (op instanceof InsertOperation) {
 				InsertOperation insert = (InsertOperation) op;
 				try {
-					contentBuilder.insert(index, insert.getText());
+					if (index >= contentBuilder.length())
+						contentBuilder.append(insert.getText());
+					else
+						contentBuilder.insert(index, insert.getText());
 					index += insert.getLength();
 				} catch(StringIndexOutOfBoundsException e) {
 					logger.error("Error inserting text; into '" + contentBuilder.toString() + "' string at " + index + " position", e);

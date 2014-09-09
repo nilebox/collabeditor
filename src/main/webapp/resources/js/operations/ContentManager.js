@@ -17,7 +17,11 @@ ContentManager.prototype.applyOperations = function(batch) {
 				index += op.retainOp.length;
 				continue;
 			case 'INSERT':
-				this.content = this.content.insert(index, op.insertOp.text);
+				if (index >= this.content) {
+					this.content += op.insertOp.text;
+				} else {
+					this.content = this.content.insert(index, op.insertOp.text);
+				}
 				index += op.getLength();
 				continue;
 			case 'DELETE':
