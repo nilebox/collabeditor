@@ -54,3 +54,7 @@ MessageBroker.prototype.sendDisconnect = function(client) {
 	console.log("Sending disconnect: " + message);
 	this.stompClient.send("/app/disconnect", {}, message);
 };
+
+MessageBroker.prototype.isConnectionLost = function() {
+	return (this.socket.readyState === SockJS.CLOSING) || (this.socket.readyState === SockJS.CLOSED);
+};

@@ -23,15 +23,8 @@ public class DocumentController {
 	private final static Logger logger = LoggerFactory.getLogger(DocumentController.class);
 
 	@Autowired
-	DocumentEditorRepository documentEditorRepo;	
+	private DocumentEditorRepository documentEditorRepo;	
 	
-	private SimpMessagingTemplate template;
-
-    @Autowired
-    public DocumentController(SimpMessagingTemplate template) {
-		this.template = template;
-    }
-
 	@RequestMapping(value = "edit.html", method = RequestMethod.GET)
 	public ModelAndView editDocument(@RequestParam(required=true) Long id, Principal principal) {
 

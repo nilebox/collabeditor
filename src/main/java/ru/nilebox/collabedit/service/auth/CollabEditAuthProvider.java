@@ -19,7 +19,7 @@ public class CollabEditAuthProvider extends
 			.getLogger(CollabEditAuthProvider.class);
 	
 	@Autowired
-	UserRepository userRepo;
+	private UserRepository userRepo;
 
 	@Override
 	protected void additionalAuthenticationChecks(UserDetails userDetails,

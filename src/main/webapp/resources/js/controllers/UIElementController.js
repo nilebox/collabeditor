@@ -1,9 +1,10 @@
-function UIElementController(container, textArea, fakeArea, titleArea, userArea) {
+function UIElementController(container, textArea, fakeArea, titleArea, userArea, reloadModal) {
 	this.container = container;
 	this.textArea = textArea;
 	this.fakeArea = fakeArea[0].firstChild;
 	this.titleArea = titleArea;
 	this.userArea = userArea;
+	this.reloadModal = reloadModal;
 	
 	this.oldVal = this.textArea.val();
 	this.oldTitle = this.titleArea.text();
@@ -240,4 +241,8 @@ UIElementController.getCaretPosition = function(e) {
 		return rc.text.length;
 	}
 	return 0;
+};
+
+UIElementController.prototype.reloadPage = function() {
+	this.reloadModal.modal('show');
 };

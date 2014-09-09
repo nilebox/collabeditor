@@ -18,7 +18,7 @@ public class CollabEditUserDetailsService implements UserDetailsService {
 	private static final Logger logger = LoggerFactory.getLogger(CollabEditUserDetailsService.class);
 	
 	@Autowired
-	UserRepository repo;
+	private UserRepository repo;
 
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {

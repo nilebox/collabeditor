@@ -22,16 +22,16 @@ import ru.nilebox.collabedit.transform.service.DocumentChangeRequest;
  * @author nile
  */
 @Controller
-public class CollabController {
-	private final static Logger logger = LoggerFactory.getLogger(CollabController.class);
+public class CollaborationController {
+	private final static Logger logger = LoggerFactory.getLogger(CollaborationController.class);
 
 	@Autowired
-	DocumentEditorRepository documentEditorRepo;	
+	private DocumentEditorRepository documentEditorRepo;	
 	
 	private SimpMessagingTemplate template;
 
     @Autowired
-    public CollabController(SimpMessagingTemplate template) {
+    public CollaborationController(SimpMessagingTemplate template) {
 		this.template = template;
     }
 

@@ -12,12 +12,20 @@ function CollaborationController(clientId, messageBroker, documentId, documentVe
 	this.elementController.onCaretChanged(this.notifyCaret.bind(this));
 }
 
+CollaborationController.prototype.checkConnection = function() {
+	if (!this.messageBroker.isConnectionLost())
+		return; // OK
+	this.elementController.reloadPage();
+};
+
 CollaborationController.prototype.notifyTitle = function(newTitle) {
+	this.checkConnection();	
 	var titleUpdate = new TitleUpdate(this.clientId, this.documentId, newTitle);
 	this.messageBroker.sendTitle(titleUpdate);
 };
 
 CollaborationController.prototype.notifyRemove = function(start, length) {
+	this.checkConnection();	
 	//send operation to server
 	var batch = new OperationBatch(this.documentVersion);
 	batch.add(OperationContainer.createRetain(start));
@@ -26,6 +34,7 @@ CollaborationController.prototype.notifyRemove = function(start, length) {
 };
 
 CollaborationController.prototype.notifyInsert = function(start, text) {
+	this.checkConnection();	
 	//send operation to server
 	var batch = new OperationBatch(this.documentVersion);
 	batch.add(OperationContainer.createRetain(start));
@@ -34,6 +43,7 @@ CollaborationController.prototype.notifyInsert = function(start, text) {
 };
 
 CollaborationController.prototype.notifyCaret = function(newPosition) {
+	this.checkConnection();
 	if (this.pendingRequestId !== null)
 		return; // client states are different
 	//send operation to server

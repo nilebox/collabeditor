@@ -21,7 +21,6 @@
 <div class="container">
     <div class="row">
 
-
         <div class="col-md-8">
             <div id="text_container">
                 <div id="fake_area"><span></span></div>
@@ -39,6 +38,25 @@
         </div>
 
     </div>
+			
+	<!-- Modal -->
+	<div id="reloadModal" class="modal fade">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+					<h4 class="modal-title">Connection problems</h4>
+				</div>
+				<div class="modal-body">
+					<p>Connection to the server was lost. We need to reload the page.</p>
+				</div>
+				<div class="modal-footer">
+					<button class="btn btn-primary" onClick="window.location.reload();">Reload</button>
+				</div>
+			</div><!-- /.modal-content -->
+		</div><!-- /.modal-dialog -->
+	</div><!-- /.modal -->
+
 </div>
 
 <script src="${root}/resources/js/operations/CaretUpdate.js"></script>
@@ -70,7 +88,7 @@
 		$('#title_area').editable();
 		var clientId = hex_md5(pstfgrpnt());
 		var messageBroker = new MessageBroker("<c:url value='/ws'/>");
-		var elementController = new UIElementController($("#text_container"), $("#text_area"), $("#fake_area"), $("#title_area"), $("#user_area"));
+		var elementController = new UIElementController($("#text_container"), $("#text_area"), $("#fake_area"), $("#title_area"), $("#user_area"), $("#reloadModal"));
 		var collaborationController = new CollaborationController(clientId, messageBroker, ${doc.id}, ${doc.version}, elementController);
 		var remoteNotify = collaborationController.remoteNotify.bind(collaborationController);
 		var remoteTitleUpdate = collaborationController.remoteTitleUpdate.bind(collaborationController);

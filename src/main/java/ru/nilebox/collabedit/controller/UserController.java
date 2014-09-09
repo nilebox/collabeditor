@@ -22,7 +22,7 @@ public class UserController {
 	private final static Logger logger = LoggerFactory.getLogger(UserController.class);
 
 	@Autowired
-	UserRepository userRepo;
+	private UserRepository userRepo;
 
 	@RequestMapping(value = "list.html", method = RequestMethod.GET)
 	public ModelAndView getUsers(SecurityContextHolderAwareRequestWrapper request,
