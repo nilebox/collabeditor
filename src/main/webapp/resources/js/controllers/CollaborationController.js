@@ -6,7 +6,7 @@ function CollaborationController(clientId, messageBroker, documentId, documentVe
 	this.pendingRequestId = null;
 	this.batchBuffer = new OperationBatchBuffer();
 	this.elementController = elementController;
-	this.elementController.onTitleChanged(this.notifyTitle);
+	this.elementController.onTitleChanged(this.notifyTitle.bind(this));
 	this.elementController.onRemove(this.notifyRemove.bind(this));
 	this.elementController.onInsert(this.notifyInsert.bind(this));
 }

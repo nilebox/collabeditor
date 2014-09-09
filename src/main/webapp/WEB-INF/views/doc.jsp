@@ -49,6 +49,7 @@
 <script src="${root}/resources/js/operations/OperationContainer.js"></script>
 <script src="${root}/resources/js/operations/OperationTransformer.js"></script>
 <script src="${root}/resources/js/operations/Pair.js"></script>
+<script src="${root}/resources/js/operations/TitleUpdate.js"></script>
 <script src="${root}/resources/js/operations/Utils.js"></script>
 <script src="${root}/resources/js/controllers/MessageBroker.js"></script>
 <script src="${root}/resources/js/controllers/CollaborationController.js"></script>
