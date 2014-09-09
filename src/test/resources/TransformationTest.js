@@ -1,6 +1,7 @@
-/////////////////////////////////////////////////////
-// Unit tests for JavaScript part of transformation
-/////////////////////////////////////////////////////
+/*!
+ * Unit tests for JavaScript part of transformation
+ * Copyright 2014 nilebox@gmail.com
+*/
 
 function checkTransform(assert, original, first, second, expected) {
 	var transform = OperationTransformer.transformBatches(first, second);

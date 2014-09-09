@@ -1,6 +1,7 @@
-/////////////////////////////////////////////////////
-// Unit tests for JavaScript part of composition
-/////////////////////////////////////////////////////
+/*!
+ * Unit tests for JavaScript part of composition
+ * Copyright 2014 nilebox@gmail.com
+*/
 
 function checkComposition(assert, original, first, second, expected) {
 	var batch = first.composeWith(second);

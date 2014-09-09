@@ -1,3 +1,8 @@
+/*!
+ * Client-side buffer for operation batches
+ * Copyright 2014 nilebox@gmail.com
+*/
+
 function OperationBatchBuffer() {
 	this.elements = [];
 }

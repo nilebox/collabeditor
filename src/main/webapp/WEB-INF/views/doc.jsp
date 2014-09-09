@@ -86,7 +86,7 @@
 <script type="text/javascript">
 	$(document).ready(function() {
 		$('#title_area').editable();
-		var clientId = hex_md5(pstfgrpnt());
+		var clientId = hex_md5(pstfgrpnt()); // browser-"unique" client id
 		var messageBroker = new MessageBroker("<c:url value='/ws'/>");
 		var elementController = new UIElementController($("#text_container"), $("#text_area"), $("#fake_area"), $("#title_area"), $("#user_area"), $("#reloadModal"));
 		var collaborationController = new CollaborationController(clientId, messageBroker, ${doc.id}, ${doc.version}, elementController);
@@ -104,6 +104,7 @@
 		</c:forEach>
 		
 		window.onbeforeunload = function() {
+			// notify server that client disconnects
 			notifyClose();
 		};
 	});

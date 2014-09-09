@@ -1,3 +1,8 @@
+/*!
+ * Wrapper for operations used to simplify JSON serialization
+ * Copyright 2014 nilebox@gmail.com
+*/
+
 function OperationContainer() {
 	this.retainOp = null;
 	this.insertOp = null;	
@@ -76,8 +81,7 @@ OperationContainer.fromObject = function(obj) {
 	else if (obj.deleteOp && obj.deleteOp !== null)
 		container.deleteOp = new DeleteOperation(obj.deleteOp.length);
 	return container;
-}
-
+};
 
 function RetainOperation(length) {
 	this.length = length;

@@ -1,3 +1,8 @@
+/*!
+ * Batch of operations (single unit of text transform)
+ * Copyright 2014 nilebox@gmail.com
+*/
+
 function OperationBatch(baseDocumentVersion) {
 	this.baseDocumentVersion = baseDocumentVersion;
 	this.containers = [];

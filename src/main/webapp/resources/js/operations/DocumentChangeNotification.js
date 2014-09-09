@@ -1,3 +1,8 @@
+/*!
+ * Document content change notification format (server->client)
+ * Copyright 2014 nilebox@gmail.com
+*/
+
 function DocumentChangeNotification(obj) {
 	this.requestId = obj.requestId;
 	this.clientId = obj.clientId;

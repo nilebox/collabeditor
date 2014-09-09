@@ -46,7 +46,7 @@ public class SerializationTest {
 		
 		String output = sw.getBuffer().toString();
 		
-		// Check that output is not changed
+		// Check that output format has not changed
 		String expected = "{\"requestId\":\"1bbfdbd6-dfd0-4932-bf72-7972e173be7e\","
 				+ "\"clientId\":\"c689c105-3d57-4318-91fa-864ee4d0c78b\","
 				+ "\"documentId\":9223372036854775807,\"baseDocumentVersion\":123,"

@@ -1,3 +1,8 @@
+/*!
+ * Cliend-side implementation of client-server interaction protocol
+ * Copyright 2014 nilebox@gmail.com
+*/
+
 function MessageBroker(url) {
 	this.socket = new SockJS(url, null, {rtt:5000});
 	this.stompClient = Stomp.over(this.socket);

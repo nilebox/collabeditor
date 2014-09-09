@@ -1,6 +1,7 @@
-/////////////////////////////////////////////////////
-// Utils for JavaScript unit tests
-/////////////////////////////////////////////////////
+/*!
+ * Utils for JavaScript unit tests
+ * Copyright 2014 nilebox@gmail.com
+*/
 
 function retainOp(length) {
 	return OperationContainer.createRetain(length);

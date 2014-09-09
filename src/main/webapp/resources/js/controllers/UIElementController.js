@@ -1,3 +1,9 @@
+/*!
+ * Controller which observes changes in UI
+ * and provides API for CollaborationController to change UI
+ * Copyright 2014 nilebox@gmail.com
+*/
+
 function UIElementController(container, textArea, fakeArea, titleArea, userArea, reloadModal) {
 	this.container = container;
 	this.textArea = textArea;
@@ -12,7 +18,7 @@ function UIElementController(container, textArea, fakeArea, titleArea, userArea,
 	this.titleArea.on('save', this.handleTitleChanged.bind(this));
 	// handle text changes
 	this.textArea.on('change keyup keydown cut paste textInput', this.handleTextChanged.bind(this));
-	// handle caret moves
+	// handle caret position changes
 	var timer = 0;
 	var caretHandler = function() {
 		clearTimeout(timer);
@@ -147,7 +153,6 @@ UIElementController.prototype.getClientCaret = function(clientId) {
 	var caret = UIElementController.createCaret(this.getClientColor(clientId));
 	//add created cursor to DOM tree
 	this.container.append(caret);
-	//save to map
 	this.clientCarets[clientId] = caret;
 	return caret;
 };
@@ -155,7 +160,7 @@ UIElementController.prototype.getClientCaret = function(clientId) {
 UIElementController.createCaret = function(color) {
 	return $('<div></div>')
 			.addClass('fake_caret blink');
-}
+};
 
 UIElementController.prototype.getClientColor = function(clientId) {
 	if (clientId in this.clientColors) {
@@ -229,7 +234,6 @@ UIElementController.getCaretPosition = function(e) {
 	if (e.selectionStart) {
 		return e.selectionStart;
 	} else if (document.selection) {
-		//el.focus();
 		var r = document.selection.createRange();
 		if (r === null)
 			return 0;

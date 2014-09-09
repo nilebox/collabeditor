@@ -9,7 +9,6 @@
 		<put-attribute name="content" value="" />
 	</definition>
 	<definition name="empty-template" template="/WEB-INF/layout/empty-template.jsp">
-		<!-- <put-attribute name="title" value="TicketRain Reports System Login" /> -->
 		<put-attribute name="content" value="" />
 	</definition>
 

@@ -1,3 +1,9 @@
+/*!
+ * Controller which runs operational transformation logic
+ * and provides communication between UIElementController and MessageBroker 
+ * Copyright 2014 nilebox@gmail.com
+*/
+
 function CollaborationController(clientId, messageBroker, documentId, documentVersion, elementController) {
 	this.clientId = clientId;
 	this.messageBroker = messageBroker;

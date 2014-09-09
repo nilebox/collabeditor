@@ -1,3 +1,9 @@
+/*!
+ * Implementation of operational transformation algorithm
+ * More details about idea of the algorithm: http://www.codecommit.com/blog/java/understanding-and-applying-operational-transformation
+ * Copyright 2014 nilebox@gmail.com
+*/
+
 function OperationTransformer() {};
 
 OperationTransformer.transformBatches = function(first, second) {

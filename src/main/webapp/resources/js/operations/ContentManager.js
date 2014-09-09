@@ -1,3 +1,8 @@
+/*!
+ * Document content manager
+ * Copyright 2014 nilebox@gmail.com
+*/
+
 function ContentManager(content) {
 	this.content = content;
 }
