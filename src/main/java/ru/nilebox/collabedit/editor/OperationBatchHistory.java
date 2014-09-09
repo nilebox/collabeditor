@@ -1,5 +1,6 @@
-package ru.nilebox.collabedit.operations;
+package ru.nilebox.collabedit.editor;
 
+import ru.nilebox.collabedit.editor.operations.OperationBatch;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;

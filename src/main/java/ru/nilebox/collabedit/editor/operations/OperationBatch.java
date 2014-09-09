@@ -1,9 +1,9 @@
-package ru.nilebox.collabedit.operations;
+package ru.nilebox.collabedit.editor.operations;
 
 import java.util.ArrayList;
 import java.util.List;
-import ru.nilebox.collabedit.format.DocumentChangeRequest;
-import ru.nilebox.collabedit.format.OperationContainer;
+import ru.nilebox.collabedit.messages.DocumentChangeRequest;
+import ru.nilebox.collabedit.messages.OperationContainer;
 
 /**
  *

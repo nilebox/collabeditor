@@ -1,5 +1,10 @@
-package ru.nilebox.collabedit.operations;
+package ru.nilebox.collabedit.editor;
 
+import ru.nilebox.collabedit.editor.operations.DeleteOperation;
+import ru.nilebox.collabedit.editor.operations.InsertOperation;
+import ru.nilebox.collabedit.editor.operations.Operation;
+import ru.nilebox.collabedit.editor.operations.OperationBatch;
+import ru.nilebox.collabedit.editor.operations.RetainOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -1,6 +1,7 @@
-package ru.nilebox.collabedit.operations;
+package ru.nilebox.collabedit.editor;
 
-import ru.nilebox.collabedit.format.ClientInfo;
+import ru.nilebox.collabedit.editor.operations.OperationBatch;
+import ru.nilebox.collabedit.messages.ClientInfo;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import java.util.Collection;
@@ -8,10 +9,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import ru.nilebox.collabedit.dao.DocumentRepository;
-import ru.nilebox.collabedit.format.CaretUpdate;
-import ru.nilebox.collabedit.format.ClientMessage;
+import ru.nilebox.collabedit.messages.CaretUpdate;
+import ru.nilebox.collabedit.messages.ClientMessage;
 import ru.nilebox.collabedit.model.Document;
-import ru.nilebox.collabedit.format.TitleUpdate;
+import ru.nilebox.collabedit.messages.TitleUpdate;
 
 /**
  *

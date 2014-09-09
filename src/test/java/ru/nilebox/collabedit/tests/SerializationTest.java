@@ -10,11 +10,11 @@ import java.util.ArrayList;
 import java.util.List;
 import org.testng.Assert;
 import org.testng.annotations.Test;
-import ru.nilebox.collabedit.operations.DeleteOperation;
-import ru.nilebox.collabedit.operations.InsertOperation;
-import ru.nilebox.collabedit.operations.RetainOperation;
-import ru.nilebox.collabedit.format.DocumentChangeRequest;
-import ru.nilebox.collabedit.format.OperationContainer;
+import ru.nilebox.collabedit.editor.operations.DeleteOperation;
+import ru.nilebox.collabedit.editor.operations.InsertOperation;
+import ru.nilebox.collabedit.editor.operations.RetainOperation;
+import ru.nilebox.collabedit.messages.DocumentChangeRequest;
+import ru.nilebox.collabedit.messages.OperationContainer;
 
 /**
  *

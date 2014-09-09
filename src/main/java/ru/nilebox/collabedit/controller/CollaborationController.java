@@ -7,15 +7,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
-import ru.nilebox.collabedit.format.CaretUpdate;
-import ru.nilebox.collabedit.format.ClientMessage;
-import ru.nilebox.collabedit.format.TitleUpdate;
-import ru.nilebox.collabedit.operations.DocumentEditor;
-import ru.nilebox.collabedit.operations.DocumentEditorRepository;
-import ru.nilebox.collabedit.operations.OperationBatch;
-import ru.nilebox.collabedit.operations.TransformationException;
-import ru.nilebox.collabedit.format.DocumentChangeNotification;
-import ru.nilebox.collabedit.format.DocumentChangeRequest;
+import ru.nilebox.collabedit.messages.CaretUpdate;
+import ru.nilebox.collabedit.messages.ClientMessage;
+import ru.nilebox.collabedit.messages.TitleUpdate;
+import ru.nilebox.collabedit.editor.DocumentEditor;
+import ru.nilebox.collabedit.editor.DocumentEditorRepository;
+import ru.nilebox.collabedit.editor.operations.OperationBatch;
+import ru.nilebox.collabedit.editor.TransformationException;
+import ru.nilebox.collabedit.messages.DocumentChangeNotification;
+import ru.nilebox.collabedit.messages.DocumentChangeRequest;
 
 /**
  *

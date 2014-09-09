@@ -1,4 +1,4 @@
-package ru.nilebox.collabedit.operations;
+package ru.nilebox.collabedit.editor.operations;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.Objects;

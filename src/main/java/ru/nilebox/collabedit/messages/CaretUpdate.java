@@ -1,13 +1,14 @@
-package ru.nilebox.collabedit.format;
+package ru.nilebox.collabedit.messages;
 
 /**
  *
  * @author nile
  */
-public class ClientMessage {
+public class CaretUpdate {
 	private Long documentId;
 	private String clientId;
-	private String username;
+	private String username;	
+	private int caretPosition;
 
 	public Long getDocumentId() {
 		return documentId;
@@ -31,6 +32,14 @@ public class ClientMessage {
 
 	public void setUsername(String username) {
 		this.username = username;
+	}
+
+	public int getCaretPosition() {
+		return caretPosition;
+	}
+
+	public void setCaretPosition(int caretPosition) {
+		this.caretPosition = caretPosition;
 	}
 	
 }

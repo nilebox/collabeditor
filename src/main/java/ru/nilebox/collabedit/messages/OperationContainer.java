@@ -1,12 +1,12 @@
-package ru.nilebox.collabedit.format;
+package ru.nilebox.collabedit.messages;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import java.util.Objects;
-import ru.nilebox.collabedit.operations.DeleteOperation;
-import ru.nilebox.collabedit.operations.InsertOperation;
-import ru.nilebox.collabedit.operations.Operation;
-import ru.nilebox.collabedit.operations.RetainOperation;
+import ru.nilebox.collabedit.editor.operations.DeleteOperation;
+import ru.nilebox.collabedit.editor.operations.InsertOperation;
+import ru.nilebox.collabedit.editor.operations.Operation;
+import ru.nilebox.collabedit.editor.operations.RetainOperation;
 
 /**
  *

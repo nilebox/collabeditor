@@ -1,4 +1,4 @@
-package ru.nilebox.collabedit.operations;
+package ru.nilebox.collabedit.editor;
 
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;

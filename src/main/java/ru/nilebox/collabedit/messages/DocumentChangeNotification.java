@@ -1,9 +1,9 @@
-package ru.nilebox.collabedit.format;
+package ru.nilebox.collabedit.messages;
 
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
-import ru.nilebox.collabedit.operations.OperationBatch;
+import ru.nilebox.collabedit.editor.operations.OperationBatch;
 
 /**
  *

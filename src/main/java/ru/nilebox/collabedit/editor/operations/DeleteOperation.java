@@ -1,4 +1,4 @@
-package ru.nilebox.collabedit.operations;
+package ru.nilebox.collabedit.editor.operations;
 
 import ru.nilebox.collabedit.util.Pair;
 
@@ -6,13 +6,13 @@ import ru.nilebox.collabedit.util.Pair;
  *
  * @author nile
  */
-public class RetainOperation extends Operation {
+public class DeleteOperation extends Operation {
 	private int length;
 	
-	public RetainOperation() {
+	public DeleteOperation() {
 	}
 	
-	public RetainOperation(int length) {
+	public DeleteOperation(int length) {
 		this.length = length;
 	}
 
@@ -28,15 +28,15 @@ public class RetainOperation extends Operation {
 	@Override
 	public Pair<Operation> splitToPair(int length) {
 		return new Pair<Operation>(
-				new RetainOperation(length),
-				new RetainOperation(getLength() - length)
+				new DeleteOperation(length),
+				new DeleteOperation(getLength() - length)
 				);
 	}
 
 	@Override
 	public int hashCode() {
 		int hash = 7;
-		hash = 43 * hash + this.length;
+		hash = 97 * hash + this.length;
 		return hash;
 	}
 
@@ -48,7 +48,7 @@ public class RetainOperation extends Operation {
 		if (getClass() != obj.getClass()) {
 			return false;
 		}
-		final RetainOperation other = (RetainOperation) obj;
+		final DeleteOperation other = (DeleteOperation) obj;
 		if (this.length != other.length) {
 			return false;
 		}

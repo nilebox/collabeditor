@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
-import ru.nilebox.collabedit.operations.DocumentEditor;
-import ru.nilebox.collabedit.operations.DocumentEditorRepository;
+import ru.nilebox.collabedit.editor.DocumentEditor;
+import ru.nilebox.collabedit.editor.DocumentEditorRepository;
 
 /**
  *

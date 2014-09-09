@@ -1,13 +1,13 @@
-package ru.nilebox.collabedit.format;
+package ru.nilebox.collabedit.messages;
 
 /**
  *
  * @author nile
  */
-public class TitleUpdate {
+public class ClientMessage {
 	private Long documentId;
 	private String clientId;
-	private String title;
+	private String username;
 
 	public Long getDocumentId() {
 		return documentId;
@@ -25,12 +25,12 @@ public class TitleUpdate {
 		this.clientId = clientId;
 	}
 
-	public String getTitle() {
-		return title;
+	public String getUsername() {
+		return username;
 	}
 
-	public void setTitle(String title) {
-		this.title = title;
+	public void setUsername(String username) {
+		this.username = username;
 	}
 	
 }

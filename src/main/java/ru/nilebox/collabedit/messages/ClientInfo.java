@@ -1,4 +1,4 @@
-package ru.nilebox.collabedit.format;
+package ru.nilebox.collabedit.messages;
 
 import java.util.Date;
 

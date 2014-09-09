@@ -2,14 +2,14 @@ package ru.nilebox.collabedit.tests;
 
 import org.testng.Assert;
 import org.testng.annotations.Test;
-import ru.nilebox.collabedit.operations.DeleteOperation;
-import ru.nilebox.collabedit.operations.ContentManager;
-import ru.nilebox.collabedit.operations.OperationTransformer;
-import ru.nilebox.collabedit.operations.InsertOperation;
-import ru.nilebox.collabedit.operations.Operation;
-import ru.nilebox.collabedit.operations.OperationBatch;
-import ru.nilebox.collabedit.operations.RetainOperation;
-import ru.nilebox.collabedit.operations.TransformationException;
+import ru.nilebox.collabedit.editor.operations.DeleteOperation;
+import ru.nilebox.collabedit.editor.ContentManager;
+import ru.nilebox.collabedit.editor.OperationTransformer;
+import ru.nilebox.collabedit.editor.operations.InsertOperation;
+import ru.nilebox.collabedit.editor.operations.Operation;
+import ru.nilebox.collabedit.editor.operations.OperationBatch;
+import ru.nilebox.collabedit.editor.operations.RetainOperation;
+import ru.nilebox.collabedit.editor.TransformationException;
 import ru.nilebox.collabedit.util.Pair;
 
 /**
