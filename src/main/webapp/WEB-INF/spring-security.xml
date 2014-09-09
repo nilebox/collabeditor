@@ -12,7 +12,8 @@
 		<intercept-url pattern='/users/edit.html' access='ROLE_USER, ROLE_ADMIN' />
 		<intercept-url pattern='/users/**' access='ROLE_ADMIN' />
 		<intercept-url pattern='/docs/**' access='ROLE_USER, ROLE_ADMIN' />
-		<form-login login-page='/login.html' default-target-url='/home.html' authentication-failure-url="/logerror.html" always-use-default-target='true' />
+		<form-login login-page='/login.html' default-target-url='/home.html'
+					authentication-failure-url="/logerror.html" always-use-default-target='false' />
 	</http>
 	<beans:bean name="collabeditUserDetailsService" class="ru.nilebox.collabedit.service.auth.CollabEditUserDetailsService">
 		<beans:property name="username" value="${local.username?username}"/>
@@ -25,7 +26,6 @@
 		<authentication-provider user-service-ref="collabeditUserDetailsService">
 			<password-encoder hash="md5" />
 		</authentication-provider>
-		<!--<authentication-provider ref="collabeditAuthProvider" />-->
 	</authentication-manager>
 
 </beans:beans>

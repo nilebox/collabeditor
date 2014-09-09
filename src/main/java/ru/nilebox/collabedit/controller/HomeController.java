@@ -21,6 +21,11 @@ public class HomeController {
 	@Autowired
 	private DocumentRepository docRepo;
 	
+	@RequestMapping(value = "*", method = RequestMethod.GET)
+	public String index() {
+		return "redirect:/home.html";
+	}	
+	
 	@RequestMapping(value = "/home.html", method = RequestMethod.GET)
 	public ModelAndView home() {
 		ModelAndView mav = new ModelAndView("home");
