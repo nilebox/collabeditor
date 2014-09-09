@@ -101,6 +101,11 @@ public class OperationContainer {
 		}
 		return true;
 	}
-	
+
+	@Override
+	public String toString() {
+		Operation op = toOperation();
+		return op.toString();
+	}	
 	
 }

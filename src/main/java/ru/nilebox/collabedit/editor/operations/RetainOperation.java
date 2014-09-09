@@ -54,5 +54,10 @@ public class RetainOperation extends Operation {
 		}
 		return true;
 	}
+
+	@Override
+	public String toString() {
+		return "retain(" + length + ')';
+	}
 	
 }

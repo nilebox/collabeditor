@@ -58,5 +58,10 @@ public class InsertOperation extends Operation {
 		}
 		return true;
 	}
+
+	@Override
+	public String toString() {
+		return "insert(" + text + ")";
+	}
 	
 }

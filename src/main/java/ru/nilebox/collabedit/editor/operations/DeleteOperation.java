@@ -54,5 +54,10 @@ public class DeleteOperation extends Operation {
 		}
 		return true;
 	}
+
+	@Override
+	public String toString() {
+		return "delete(" + length + ')';
+	}
 	
 }
