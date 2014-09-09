@@ -1,6 +1,5 @@
 package ru.nilebox.collabedit.operations;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import ru.nilebox.collabedit.util.Pair;
 
 /**

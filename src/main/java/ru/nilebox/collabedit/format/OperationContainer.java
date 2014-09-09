@@ -1,4 +1,4 @@
-package ru.nilebox.collabedit.transform.service;
+package ru.nilebox.collabedit.format;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;

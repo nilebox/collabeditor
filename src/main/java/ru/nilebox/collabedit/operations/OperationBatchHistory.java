@@ -1,9 +1,8 @@
-package ru.nilebox.collabedit.transform;
+package ru.nilebox.collabedit.operations;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import ru.nilebox.collabedit.operations.OperationBatch;
 import ru.nilebox.collabedit.util.EvictingDeque;
 
 /**

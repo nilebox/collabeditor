@@ -13,8 +13,8 @@ import org.testng.annotations.Test;
 import ru.nilebox.collabedit.operations.DeleteOperation;
 import ru.nilebox.collabedit.operations.InsertOperation;
 import ru.nilebox.collabedit.operations.RetainOperation;
-import ru.nilebox.collabedit.transform.service.DocumentChangeRequest;
-import ru.nilebox.collabedit.transform.service.OperationContainer;
+import ru.nilebox.collabedit.format.DocumentChangeRequest;
+import ru.nilebox.collabedit.format.OperationContainer;
 
 /**
  *

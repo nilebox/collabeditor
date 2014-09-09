@@ -1,4 +1,4 @@
-package ru.nilebox.collabedit.transform;
+package ru.nilebox.collabedit.operations;
 
 /**
  * Exception to be thrown when transformation is failed

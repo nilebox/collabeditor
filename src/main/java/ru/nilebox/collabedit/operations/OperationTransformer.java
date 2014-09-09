@@ -1,10 +1,5 @@
-package ru.nilebox.collabedit.transform;
+package ru.nilebox.collabedit.operations;
 
-import ru.nilebox.collabedit.operations.OperationBatch;
-import ru.nilebox.collabedit.operations.Operation;
-import ru.nilebox.collabedit.operations.InsertOperation;
-import ru.nilebox.collabedit.operations.RetainOperation;
-import ru.nilebox.collabedit.operations.DeleteOperation;
 import java.util.Iterator;
 import ru.nilebox.collabedit.util.Pair;
 

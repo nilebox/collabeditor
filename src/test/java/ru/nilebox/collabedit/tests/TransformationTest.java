@@ -3,13 +3,13 @@ package ru.nilebox.collabedit.tests;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 import ru.nilebox.collabedit.operations.DeleteOperation;
-import ru.nilebox.collabedit.transform.ContentManager;
-import ru.nilebox.collabedit.transform.OperationTransformer;
+import ru.nilebox.collabedit.operations.ContentManager;
+import ru.nilebox.collabedit.operations.OperationTransformer;
 import ru.nilebox.collabedit.operations.InsertOperation;
 import ru.nilebox.collabedit.operations.Operation;
 import ru.nilebox.collabedit.operations.OperationBatch;
 import ru.nilebox.collabedit.operations.RetainOperation;
-import ru.nilebox.collabedit.transform.TransformationException;
+import ru.nilebox.collabedit.operations.TransformationException;
 import ru.nilebox.collabedit.util.Pair;
 
 /**

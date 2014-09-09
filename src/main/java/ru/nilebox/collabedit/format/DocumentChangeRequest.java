@@ -1,4 +1,4 @@
-package ru.nilebox.collabedit.transform.service;
+package ru.nilebox.collabedit.format;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,12 +1,7 @@
-package ru.nilebox.collabedit.transform;
+package ru.nilebox.collabedit.operations;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ru.nilebox.collabedit.operations.OperationBatch;
-import ru.nilebox.collabedit.operations.Operation;
-import ru.nilebox.collabedit.operations.InsertOperation;
-import ru.nilebox.collabedit.operations.RetainOperation;
-import ru.nilebox.collabedit.operations.DeleteOperation;
 
 /**
  *
