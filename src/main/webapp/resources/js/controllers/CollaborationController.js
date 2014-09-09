@@ -93,7 +93,7 @@ CollaborationController.prototype.applyRemoteBatch = function(batch) {
 	var newText = ContentManager.applyOperations(oldText, batch);
 	
 	var oldSelection = this.elementController.getTextSelection();
-	var newSelection = [ContentManager.transformCursor(oldSelection[0], batch), ContentManager.transformCursor(oldSelection[1], batch)];
+	var newSelection = [ContentManager.transformCaret(oldSelection[0], batch), ContentManager.transformCaret(oldSelection[1], batch)];
 	
 	this.elementController.setText(newText);
 	this.elementController.setTextSelection(newSelection);

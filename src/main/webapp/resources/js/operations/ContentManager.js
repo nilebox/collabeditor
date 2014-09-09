@@ -43,7 +43,7 @@ ContentManager.applyOperations = function(content, batch) {
 	return content;
 };
 
-ContentManager.transformCursor = function(cursor, batch) {
+ContentManager.transformCaret = function(cursor, batch) {
 	var operations = batch.containers;
 	var index = 0;
 	for (var i = 0; i < operations.length; i++) {
