@@ -3,7 +3,7 @@ function MessageBroker(url) {
 	this.stompClient = Stomp.over(this.socket);
 }
 
-MessageBroker.prototype.connect = function(documentId, notifyReceive, notifyTitleUpdate, notifyCaretUpdate) {
+MessageBroker.prototype.connect = function(documentId, notifyReceive, notifyTitleUpdate, notifyCaretUpdate, notifyDisconnect) {
 	var stompClient = this.stompClient;
 	stompClient.connect({}, function(frame) {
 		console.log('Connected: ' + frame);
@@ -18,7 +18,11 @@ MessageBroker.prototype.connect = function(documentId, notifyReceive, notifyTitl
 		stompClient.subscribe('/topic/caret/' + documentId, function(titleCaret) {
 			console.log('Received data: ' + titleCaret);
 			notifyCaretUpdate(JSON.parse(titleCaret.body));
-		});		
+		});
+		stompClient.subscribe('/topic/disconnect/' + documentId, function(client) {
+			console.log('Received data: ' + client);
+			notifyDisconnect(JSON.parse(client.body));
+		});			
 	});
 };
 
@@ -43,4 +47,10 @@ MessageBroker.prototype.sendCaret = function(caretUpdate) {
 	var message = JSON.stringify(caretUpdate);
 	console.log("Sending caret: " + message);
 	this.stompClient.send("/app/caret", {}, message);
+};
+
+MessageBroker.prototype.sendDisconnect = function(client) {
+	var message = JSON.stringify(client);
+	console.log("Sending disconnect: " + message);
+	this.stompClient.send("/app/disconnect", {}, message);
 };

@@ -134,6 +134,11 @@ UIElementController.prototype.showRemoteCaret = function(clientId, username, car
 	this.setCaretPosition(clientId, caretPosition);
 };
 
+UIElementController.prototype.removeRemoteClient = function(clientId) {
+	this.removeUserBadge(clientId);
+	this.removeCaret(clientId);
+};
+
 UIElementController.prototype.getClientCaret = function(clientId) {
 	if (clientId in this.clientCarets) {
 		return this.clientCarets[clientId];
@@ -172,6 +177,22 @@ UIElementController.prototype.addUserBadge = function(clientId, username) {
 	li.append(badge);
 	this.userArea.append(li);
 	this.clientBadges[clientId] = li;
+};
+
+UIElementController.prototype.removeUserBadge = function(clientId) {
+	if (!(clientId in this.clientBadges))
+		return; //no client badge
+	var badge = this.clientBadges[clientId];
+	badge.remove();
+	delete this.clientBadges[clientId];
+};
+
+UIElementController.prototype.removeCaret = function(clientId) {
+	if (!(clientId in this.clientCarets))
+		return; //no client caret
+	var caret = this.clientCarets[clientId];
+	caret.remove();
+	delete this.clientCarets[clientId];
 };
 
 UIElementController.prototype.setCaretPosition = function(clientId, position) {

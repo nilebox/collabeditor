@@ -9,6 +9,7 @@ import java.util.concurrent.ConcurrentMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import ru.nilebox.collabedit.dao.DocumentRepository;
 import ru.nilebox.collabedit.model.CaretUpdate;
+import ru.nilebox.collabedit.model.ClientMessage;
 import ru.nilebox.collabedit.model.Document;
 import ru.nilebox.collabedit.model.TitleUpdate;
 import ru.nilebox.collabedit.old.transform.OperationHistory;
@@ -92,6 +93,10 @@ public class DocumentEditor {
 		client.setLastActivity(new Date());
 		
 		return client;
+	}
+	
+	public void removeClient(ClientMessage message) {
+		clients.remove(message.getClientId());
 	}
 	
 	public Document getDocument() {

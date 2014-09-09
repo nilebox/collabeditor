@@ -42,6 +42,7 @@
 </div>
 
 <script src="${root}/resources/js/operations/CaretUpdate.js"></script>
+<script src="${root}/resources/js/operations/ClientMessage.js"></script>
 <script src="${root}/resources/js/operations/ContentManager.js"></script>
 <script src="${root}/resources/js/operations/DocumentChangeNotification.js"></script>
 <script src="${root}/resources/js/operations/DocumentChangeRequest.js"></script>
@@ -73,14 +74,20 @@
 		var collaborationController = new CollaborationController(clientId, messageBroker, ${doc.id}, ${doc.version}, elementController);
 		var remoteNotify = collaborationController.remoteNotify.bind(collaborationController);
 		var remoteTitleUpdate = collaborationController.remoteTitleUpdate.bind(collaborationController);
-		var remoteCaretUpdate = collaborationController.remoteCaretUpdate.bind(collaborationController);		
-		messageBroker.connect(${doc.id}, remoteNotify, remoteTitleUpdate, remoteCaretUpdate);
+		var remoteCaretUpdate = collaborationController.remoteCaretUpdate.bind(collaborationController);
+		var remoteDisconnect = collaborationController.remoteDisconnect.bind(collaborationController);		
+		var notifyClose = collaborationController.notifyClose.bind(collaborationController);		
+		messageBroker.connect(${doc.id}, remoteNotify, remoteTitleUpdate, remoteCaretUpdate, remoteDisconnect);
 		<c:forEach items="${clients}" var="client">
 		if (clientId !== '${client.clientId}')
 		{
 			elementController.showRemoteCaret('${client.clientId}', '${client.username}', ${client.caretPosition});
 		}
 		</c:forEach>
+		
+		window.onbeforeunload = function() {
+			notifyClose();
+		};
 	});
 </script>
 

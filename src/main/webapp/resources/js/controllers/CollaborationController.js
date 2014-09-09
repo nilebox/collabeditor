@@ -41,6 +41,13 @@ CollaborationController.prototype.notifyCaret = function(newPosition) {
 	this.messageBroker.sendCaret(caretUpdate);
 };
 
+CollaborationController.prototype.notifyClose = function() {
+	//send notification to server
+	var client = new ClientMessage(this.clientId, this.documentId);
+	this.messageBroker.sendDisconnect(client);
+	this.messageBroker.disconnect();
+};
+
 CollaborationController.prototype.addBatch = function(batch) {
 	if (this.pendingRequestId === null) {
 		// Immediately send the operation to server
@@ -120,6 +127,12 @@ CollaborationController.prototype.remoteCaretUpdate = function(caretUpdate) {
 	if (this.pendingRequestId !== null)
 		return; // client states are different
 	this.elementController.showRemoteCaret(caretUpdate.clientId, caretUpdate.username, caretUpdate.caretPosition);
+};
+
+CollaborationController.prototype.remoteDisconnect = function(client) {
+	if (client.clientId === this.clientId)
+		return; // skip own updates
+	this.elementController.removeRemoteClient(client.clientId);
 };
 
 CollaborationController.prototype.showRemoteCaret = function(clientId, username, batch) {
