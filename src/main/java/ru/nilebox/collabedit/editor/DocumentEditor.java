@@ -40,36 +40,39 @@ public class DocumentEditor {
 	
 	public void applyTitle(TitleUpdate update, Principal principal) {
 		Document doc = getDocument();
-		synchronized(this) {
-			doc.setTitle(update.getTitle());
-			doc.setModifiedBy(principal.getName());
-			doc = docRepo.save(doc);
-			this.document = doc;
-		}
+		doc.setTitle(update.getTitle());
+		doc.setModifiedBy(principal.getName());
+		doc = docRepo.save(doc);
+		this.document = doc;
 	}
 	
-	public void applyBatch(Long documentId, OperationBatch batch, Principal principal) throws TransformationException {
+	public OperationBatch applyBatch(Long documentId, OperationBatch batch, Principal principal) throws TransformationException {
+		String clientId = batch.getClientId();
 		List<OperationBatch> diffBatches = history.getBatchesForDifference(batch.getBaseDocumentVersion());
 		for (OperationBatch b : diffBatches) {
-			// transform B to B'
+			// Check validity
+			if (batch.getClientId().equals(b.getClientId()))
+				throw new TransformationException("Found two conflicting batches with the same base version from client");
+			// Transform B to B'
 			batch = OperationTransformer.transformBatches(batch, b).getFirst();
 		}
 		
-		ContentManager contentManager = getContentManager();
-		contentManager.applyOperations(batch);
-		
 		Document doc = getDocument();
-		synchronized(this) {
-			doc.setContents(contentManager.getContent());
-			doc.setVersion(doc.getVersion() + 1);
-			doc.setModifiedBy(principal.getName());
-			doc = docRepo.save(doc);
-			this.document = doc;
-			batch.setBaseDocumentVersion(doc.getVersion() - 1);
-		}
+		ContentManager cm = getContentManager();
+		cm.applyOperations(batch);
+
+		batch.setBaseDocumentVersion(doc.getVersion());
+		batch.setClientId(clientId);
+		
+		doc.setContents(cm.getContent());
+		doc.setVersion(doc.getVersion() + 1);
+		doc.setModifiedBy(principal.getName());
+		doc = docRepo.save(doc);
+		this.document = doc;
 		
 		// Save to history - may be needed for "merging" edits from multiple clients
 		history.addBatch(batch);
+		return batch;
 	}
 	
 	public void updateClientCarets(String clientId, String username, OperationBatch batch) {

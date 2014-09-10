@@ -12,7 +12,7 @@ function UIElementController(container, textArea, fakeArea, titleArea, userArea,
 	this.userArea = userArea;
 	this.reloadModal = reloadModal;
 	
-	this.oldVal = this.textArea.val();
+	this.oldVal = this.getText();
 	this.oldTitle = this.titleArea.text();
 	this.oldCaretPosition = 0;
 	this.titleArea.on('save', this.handleTitleChanged.bind(this));
@@ -67,7 +67,7 @@ UIElementController.prototype.handleTitleChanged = function(e, params) {
 };
 
 UIElementController.prototype.handleTextChanged = function() {
-	var newVal = this.textArea.val();
+	var newVal = this.getText();
 	if (newVal === this.oldVal) {
 		return; //check to prevent multiple simultaneous triggers
 	}
@@ -101,7 +101,7 @@ UIElementController.prototype.handleCaretChanged = function() {
 };
 
 UIElementController.prototype.getText = function() {
-	return this.textArea.val().replace(/\r\n/g, '\n');
+	return this.textArea.val();
 };
 
 UIElementController.prototype.setText = function(newText) {
@@ -109,6 +109,7 @@ UIElementController.prototype.setText = function(newText) {
 	// Fixate the window's scroll while we set the element's value. Otherwise
 	// the browser scrolls to the element.
 	var scrollTop = elem.scrollTop;
+	this.handleTextChanged();	
 	elem.value = newText;
 	this.oldVal = elem.value;
 	if (elem.scrollTop !== scrollTop)
@@ -204,7 +205,7 @@ UIElementController.prototype.removeCaret = function(clientId) {
 UIElementController.prototype.setCaretPosition = function(clientId, position) {
 	var caret = this.getClientCaret(clientId);
 	var color = this.getClientColor(clientId);
-	this.fakeArea.innerHTML = this.textArea.val().substring(0, position).replace(/\n$/, '\n\u0001');
+	this.fakeArea.innerHTML = this.textArea.val().substring(0, position);
 	
 	var realElement = this.textArea[0];
 	var caretElement = caret[0]; //get DOM element from jquery object

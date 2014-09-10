@@ -1,5 +1,9 @@
 package ru.nilebox.collabedit.messages;
 
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.MappingJsonFactory;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -53,5 +57,23 @@ public class DocumentChangeRequest {
 	public void setOperations(List<OperationContainer> operations) {
 		this.operations = operations;
 	}
+
+	@Override
+	public String toString() {
+		try {
+			StringWriter sw = new StringWriter();   // serialize
+			ObjectMapper mapper = new ObjectMapper();
+			MappingJsonFactory jsonFactory = new MappingJsonFactory();
+			JsonGenerator jsonGenerator = jsonFactory.createGenerator(sw);
+			mapper.writeValue(jsonGenerator, this);
+			sw.close();
+			String output = sw.getBuffer().toString();
+			return output;
+		} catch (Exception e) {
+			return e.toString();
+		}
+	}
+	
+	
 	
 }

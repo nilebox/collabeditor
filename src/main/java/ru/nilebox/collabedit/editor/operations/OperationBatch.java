@@ -12,7 +12,16 @@ import ru.nilebox.collabedit.messages.OperationContainer;
 public class OperationBatch extends ArrayList<Operation> {
 	private static final long serialVersionUID = -8561058327173530209L;
 
+	private String clientId;
 	private int baseDocumentVersion;
+
+	public String getClientId() {
+		return clientId;
+	}
+
+	public void setClientId(String clientId) {
+		this.clientId = clientId;
+	}
 	
 	public int getBaseDocumentVersion() {
 		return baseDocumentVersion;
@@ -23,12 +32,13 @@ public class OperationBatch extends ArrayList<Operation> {
 	}	
 	
 	public static OperationBatch fromDocumentChangeRequest(DocumentChangeRequest request) {
-		OperationBatch collection = new OperationBatch();
-		collection.baseDocumentVersion = request.getBaseDocumentVersion();
+		OperationBatch batch = new OperationBatch();
+		batch.clientId = request.getClientId();
+		batch.baseDocumentVersion = request.getBaseDocumentVersion();
 		for (OperationContainer c : request.getOperations()) {
-			collection.add(c.toOperation());
+			batch.add(c.toOperation());
 		}
-		return collection;
+		return batch;
 	}
 	
 	public List<OperationContainer> toOperationContainers() {

@@ -40,11 +40,17 @@ public class CollaborationController {
 		logger.info("Received data: " + request);
 		try {
 			DocumentEditor documentEditor =  documentEditorRepo.getDocumentEditor(request.getDocumentId());
-			OperationBatch batch = OperationBatch.fromDocumentChangeRequest(request);
-			documentEditor.applyBatch(request.getDocumentId(), batch, principal);
-			documentEditor.updateClientCarets(request.getClientId(), principal.getName(), batch);
-			DocumentChangeNotification notification = DocumentChangeNotification.create(request, batch, principal);
-			template.convertAndSend("/topic/operation/" + request.getDocumentId(), notification);
+			synchronized(documentEditor) {
+				logger.info("REQUEST: " + request.toString());
+				logger.info("DOCUMENT BEFORE: " + documentEditor.getDocument().getContents());
+				OperationBatch batch = OperationBatch.fromDocumentChangeRequest(request);
+				batch = documentEditor.applyBatch(request.getDocumentId(), batch, principal);
+				documentEditor.updateClientCarets(request.getClientId(), principal.getName(), batch);
+				DocumentChangeNotification notification = DocumentChangeNotification.create(request, batch, principal);
+				logger.info("DOCUMENT AFTER: " + documentEditor.getDocument().getContents());
+				logger.info("NOTIFICATION: " + notification.toString());
+				template.convertAndSend("/topic/operation/" + request.getDocumentId(), notification);
+			}
 		} catch (TransformationException ex) {
 			logger.error("Error processing diff: " + request, ex);
 		}
@@ -54,8 +60,10 @@ public class CollaborationController {
 	public void updateTitle(TitleUpdate update, Principal principal) {
 		logger.info("Received data: " + update);
 		DocumentEditor documentEditor =  documentEditorRepo.getDocumentEditor(update.getDocumentId());
-		documentEditor.applyTitle(update, principal);
-		template.convertAndSend("/topic/title/" + update.getDocumentId(), update);
+		synchronized(documentEditor) {
+			documentEditor.applyTitle(update, principal);
+			template.convertAndSend("/topic/title/" + update.getDocumentId(), update);
+		}
 	}
 	
 	@MessageMapping("/caret")
@@ -63,8 +71,10 @@ public class CollaborationController {
 		logger.info("Received data: " + update);
 		update.setUsername(principal.getName());
 		DocumentEditor documentEditor =  documentEditorRepo.getDocumentEditor(update.getDocumentId());
-		documentEditor.applyClientCaret(update);
-		template.convertAndSend("/topic/caret/" + update.getDocumentId(), update);
+		synchronized(documentEditor) {
+			documentEditor.applyClientCaret(update);
+			template.convertAndSend("/topic/caret/" + update.getDocumentId(), update);
+		}
 	}
 	
 	@MessageMapping("/disconnect")
@@ -72,8 +82,10 @@ public class CollaborationController {
 		logger.info("Received data: " + client);
 		client.setUsername(principal.getName());
 		DocumentEditor documentEditor =  documentEditorRepo.getDocumentEditor(client.getDocumentId());
-		documentEditor.removeClient(client);
-		template.convertAndSend("/topic/disconnect/" + client.getDocumentId(), client);
+		synchronized(documentEditor) {
+			documentEditor.removeClient(client);
+			template.convertAndSend("/topic/disconnect/" + client.getDocumentId(), client);
+		}
 	}
 	
 }

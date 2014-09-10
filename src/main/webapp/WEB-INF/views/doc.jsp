@@ -77,7 +77,6 @@
 <script src="${root}/resources/js/sockjs-0.3.4.js"></script>
 <script src="${root}/resources/js/stomp.js"></script>
 <script src="${root}/resources/js/uuid.js"></script>
-<script src="${root}/resources/js/queue.js"></script>
 <script src="${root}/resources/js/colors.js"></script>
 <script src="${root}/resources/js/bootstrap.min.js"></script>
 <script src="${root}/resources/js/bootstrap-editable.min.js"></script>

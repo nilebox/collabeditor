@@ -38,7 +38,7 @@ public class ContentManager {
 			} else if (op instanceof InsertOperation) {
 				InsertOperation insert = (InsertOperation) op;
 				try {
-					if (index >= contentBuilder.length())
+					if (index > contentBuilder.length())
 						contentBuilder.append(insert.getText());
 					else
 						contentBuilder.insert(index, insert.getText());

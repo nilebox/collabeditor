@@ -44,7 +44,7 @@ public class DocumentEditorRepository {
 		return new DocumentEditor(documentId, docRepo);
 	}
 
-	public DocumentEditor getDocumentEditor(Long documentId) {
+	public synchronized DocumentEditor getDocumentEditor(Long documentId) {
 		try {
 			return cache.get(documentId);
 		} catch (ExecutionException e) {

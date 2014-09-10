@@ -71,6 +71,10 @@ OperationTransformer.splitOperations = function(first, second) {
 };
 
 OperationTransformer.transformOperations = function(first, second) {
+	// nothing, nothing -> nothing, nothing
+	if (first === null && second === null)
+		return new Pair(null, null);
+	
 	// insert, nothing -> insert, retain
 	if (first !== null && first.getType() === 'INSERT') {
 		return new Pair(first, OperationContainer.createRetain(first.getLength()));

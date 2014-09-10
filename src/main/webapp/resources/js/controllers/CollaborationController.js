@@ -10,6 +10,7 @@ function CollaborationController(clientId, messageBroker, documentId, documentVe
 	this.documentId = documentId;
 	this.documentVersion = documentVersion;
 	this.pendingRequestId = null;
+	this.pendingBatch = null;
 	this.batchBuffer = new OperationBatchBuffer();
 	this.elementController = elementController;
 	this.elementController.onTitleChanged(this.notifyTitle.bind(this));
@@ -67,16 +68,17 @@ CollaborationController.prototype.notifyClose = function() {
 CollaborationController.prototype.addBatch = function(batch) {
 	if (this.pendingRequestId === null) {
 		// Immediately send the operation to server
-		sendBatch(batch);
+		this.sendBatch(batch);
 	} else {
 		// Add operation to queue
 		this.batchBuffer.enqueue(batch);
 	}
 };
 
-CollaborationController.prototype.addBatch = function(batch) {
+CollaborationController.prototype.sendBatch = function(batch) {
 	batch.baseDocumentVersion = this.documentVersion;
 	var request = new DocumentChangeRequest(this.clientId, this.documentId, batch);
+	this.pendingBatch = batch;
 	this.pendingRequestId = request.requestId;
 	this.messageBroker.sendOperation(request);
 };
@@ -84,13 +86,15 @@ CollaborationController.prototype.addBatch = function(batch) {
 CollaborationController.prototype.sendBatchFromBuffer = function() {
 	if (this.batchBuffer.size() > 0) {
 		var batch = this.batchBuffer.dequeue();
-		sendBatch(batch);
+		this.sendBatch(batch);
 	}
 };
 
 CollaborationController.prototype.remoteNotify = function(obj) {
+	// Convert JSON obj into notification
 	var notification = new DocumentChangeNotification(obj);
-	this.documentVersion = notification.newDocumentVersion;
+	if (this.documentVersion >= notification.newDocumentVersion)
+		console.error("Duplicate document version: " + notification.newDocumentVersion);
 
 	if (notification.clientId === this.clientId) {
 		if (notification.requestId !== this.pendingRequestId) {
@@ -99,16 +103,26 @@ CollaborationController.prototype.remoteNotify = function(obj) {
 		}
 		console.log("Received operation confirmation: " + this.pendingRequestId);
 		this.pendingRequestId = null;
+		this.documentVersion = notification.newDocumentVersion;
 		this.sendBatchFromBuffer();
 		return;
+	} else {
+		// Before applying remote operation, ensure that there are no unreported local changes
+		this.elementController.handleTextChanged();
+		// Apply remote operation
+		this.documentVersion = notification.newDocumentVersion;		
+		var remoteBatch = this.transformRemoteBatch(notification.batch);
+		this.applyRemoteBatch(remoteBatch);
+		this.showRemoteCaret(notification.clientId, notification.username, remoteBatch);
 	}
-	
-	var remoteBatch = this.transformRemoteBatch(notification.batch);
-	this.applyRemoteBatch(remoteBatch);
-	this.showRemoteCaret(notification.clientId, notification.username, remoteBatch);	
 };
 
 CollaborationController.prototype.transformRemoteBatch = function(remoteBatch) {
+	if (this.pendingRequestId !== null) {
+		// We need to transform with pending batch first
+		var transformed = OperationTransformer.transformBatches(remoteBatch, this.pendingBatch);
+		remoteBatch = transformed.first;
+	}
 	for (i = 0; i < this.batchBuffer.size(); i++) {
 		var batch = this.batchBuffer.get(i);
 		var transformed = OperationTransformer.transformBatches(remoteBatch, batch);

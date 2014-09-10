@@ -11,7 +11,7 @@ import ru.nilebox.collabedit.util.EvictingDeque;
  * @author nile
  */
 public class OperationBatchHistory {
-	private final EvictingDeque<OperationBatch> batches = EvictingDeque.create(100);
+	private final EvictingDeque<OperationBatch> batches = EvictingDeque.create(1000);
 	
 	public List<OperationBatch> getBatchesForDifference(int version) {
 		List<OperationBatch> result = new ArrayList<OperationBatch>();
