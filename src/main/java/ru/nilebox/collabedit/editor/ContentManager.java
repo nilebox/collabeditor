@@ -37,15 +37,11 @@ public class ContentManager {
 				continue;
 			} else if (op instanceof InsertOperation) {
 				InsertOperation insert = (InsertOperation) op;
-				try {
-					if (index > contentBuilder.length())
-						contentBuilder.append(insert.getText());
-					else
-						contentBuilder.insert(index, insert.getText());
-					index += insert.getLength();
-				} catch(StringIndexOutOfBoundsException e) {
-					logger.error("Error inserting text; into '" + contentBuilder.toString() + "' string at " + index + " position", e);
-				}
+				if (index >= contentBuilder.length())
+					contentBuilder.append(insert.getText());
+				else
+					contentBuilder.insert(index, insert.getText());
+				index += insert.getLength();
 			} else if (op instanceof DeleteOperation) {
 				DeleteOperation delete = (DeleteOperation) op;
 				contentBuilder.delete(index, index + delete.getLength());

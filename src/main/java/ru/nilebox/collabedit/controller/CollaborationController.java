@@ -41,14 +41,10 @@ public class CollaborationController {
 		try {
 			DocumentEditor documentEditor =  documentEditorRepo.getDocumentEditor(request.getDocumentId());
 			synchronized(documentEditor) {
-				logger.info("REQUEST: " + request.toString());
-				logger.info("DOCUMENT BEFORE: " + documentEditor.getDocument().getContents());
 				OperationBatch batch = OperationBatch.fromDocumentChangeRequest(request);
 				batch = documentEditor.applyBatch(request.getDocumentId(), batch, principal);
 				documentEditor.updateClientCarets(request.getClientId(), principal.getName(), batch);
 				DocumentChangeNotification notification = DocumentChangeNotification.create(request, batch, principal);
-				logger.info("DOCUMENT AFTER: " + documentEditor.getDocument().getContents());
-				logger.info("NOTIFICATION: " + notification.toString());
 				template.convertAndSend("/topic/operation/" + request.getDocumentId(), notification);
 			}
 		} catch (TransformationException ex) {

@@ -37,10 +37,11 @@ ContentManager.applyOperations = function(content, batch) {
 				index += op.retainOp.length;
 				continue;
 			case 'INSERT':
-				if (index > content.length)
+				if (index >= content.length) {
 					content += op.insertOp.text;
-				else
+				} else {
 					content = content.insert(index, op.insertOp.text);
+				}
 				index += op.getLength();
 				continue;
 			case 'DELETE':
