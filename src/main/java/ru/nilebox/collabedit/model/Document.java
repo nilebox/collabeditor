@@ -14,10 +14,10 @@ import javax.persistence.PreUpdate;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import ru.nilebox.collabedit.service.auth.UserDetailsTool;
+import ru.nilebox.collabedit.service.auth.UserDetailsUtil;
 
 /**
- *
+ * Document JPA entity
  * @author nile
  */
 @Entity(name="collab_doc")
@@ -111,7 +111,7 @@ public class Document implements Serializable {
 	@PreUpdate
 	@PrePersist
 	void preUpdate() {
-		User user = UserDetailsTool.getUserDetailsFromContext();
+		User user = UserDetailsUtil.getUserDetailsFromContext();
 		if (user != null) {
 			modifiedBy = user.getUsername();
 		}

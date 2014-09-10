@@ -5,7 +5,7 @@ import java.util.Objects;
 import ru.nilebox.collabedit.util.Pair;
 
 /**
- *
+ * Insert atomic operation
  * @author nile
  */
 public class InsertOperation extends Operation {

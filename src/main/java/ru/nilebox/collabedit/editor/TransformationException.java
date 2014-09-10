@@ -1,7 +1,7 @@
 package ru.nilebox.collabedit.editor;
 
 /**
- * Exception to be thrown when transformation is failed
+ * Exception to be thrown if transformation is failed
  * @author nile
  */
 public class TransformationException extends Exception {

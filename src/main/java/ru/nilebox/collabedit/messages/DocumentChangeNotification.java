@@ -10,7 +10,7 @@ import java.util.List;
 import ru.nilebox.collabedit.editor.operations.OperationBatch;
 
 /**
- *
+ * Document content change notification format (server->client)
  * @author nile
  */
 public class DocumentChangeNotification {

@@ -1,7 +1,7 @@
 package ru.nilebox.collabedit.messages;
 
 /**
- *
+ * Title change notification message format (client<->server)
  * @author nile
  */
 public class TitleUpdate {

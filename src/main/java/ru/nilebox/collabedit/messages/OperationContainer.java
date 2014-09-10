@@ -9,7 +9,7 @@ import ru.nilebox.collabedit.editor.operations.Operation;
 import ru.nilebox.collabedit.editor.operations.RetainOperation;
 
 /**
- *
+ * Wrapper for operations used to simplify JSON serialization
  * @author nile
  */
 @JsonInclude(Include.NON_NULL)

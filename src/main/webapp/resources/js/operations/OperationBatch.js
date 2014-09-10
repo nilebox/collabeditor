@@ -1,5 +1,5 @@
 /*!
- * Batch of operations (single unit of text transform)
+ * Batch of operations (single unit of text editing)
  * Copyright 2014 nilebox@gmail.com
 */
 

@@ -5,7 +5,7 @@ import org.springframework.stereotype.Repository;
 import ru.nilebox.collabedit.model.User;
 
 /**
- *
+ * JPA repository for working with user storage
  * @author nile
  */
 @Repository

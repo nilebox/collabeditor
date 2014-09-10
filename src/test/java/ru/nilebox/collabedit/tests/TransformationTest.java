@@ -13,7 +13,7 @@ import ru.nilebox.collabedit.editor.TransformationException;
 import ru.nilebox.collabedit.util.Pair;
 
 /**
- *
+ * Tests for operational transformation algorithm implementation
  * @author nile
  */
 public class TransformationTest {

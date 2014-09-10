@@ -3,7 +3,7 @@ package ru.nilebox.collabedit.editor.operations;
 import ru.nilebox.collabedit.util.Pair;
 
 /**
- *
+ * Delete atomic operation
  * @author nile
  */
 public class DeleteOperation extends Operation {

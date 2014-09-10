@@ -17,7 +17,7 @@ import ru.nilebox.collabedit.messages.DocumentChangeRequest;
 import ru.nilebox.collabedit.messages.OperationContainer;
 
 /**
- *
+ * Test for JSON serialization
  * @author nile
  */
 public class SerializationTest {

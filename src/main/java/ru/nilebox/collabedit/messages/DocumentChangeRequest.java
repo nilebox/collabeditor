@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- *
+ * Document content change request format (client->server)
  * @author nile
  */
 public class DocumentChangeRequest {

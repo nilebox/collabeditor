@@ -3,7 +3,7 @@ package ru.nilebox.collabedit.messages;
 import java.util.Date;
 
 /**
- *
+ * Client information message format
  * @author nile
  */
 public class ClientInfo {

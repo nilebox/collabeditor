@@ -11,7 +11,7 @@ import ru.nilebox.collabedit.dao.DocumentRepository;
 import ru.nilebox.collabedit.model.Document;
 
 /**
- *
+ * Main controller (index)
  * @author nile
  */
 @Controller

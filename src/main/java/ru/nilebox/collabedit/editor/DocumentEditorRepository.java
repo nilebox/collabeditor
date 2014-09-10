@@ -13,7 +13,7 @@ import ru.nilebox.collabedit.dao.DocumentRepository;
 import ru.nilebox.collabedit.model.Document;
 
 /**
- *
+ * Repository of document editors, using expiring cache
  * @author nile
  */
 @Service

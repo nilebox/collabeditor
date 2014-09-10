@@ -6,7 +6,11 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import ru.nilebox.collabedit.model.User;
 
-public class UserDetailsTool {
+/**
+ * Utility class for retrieving current user details
+ * @author nile
+ */
+public class UserDetailsUtil {
 	public static User getUserDetailsFromContext() {
 		return (User) getCoreUserDetailsFromContext();
 	}

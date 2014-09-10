@@ -16,7 +16,7 @@ import ru.nilebox.collabedit.model.Document;
 import ru.nilebox.collabedit.messages.TitleUpdate;
 
 /**
- *
+ * Document editor with operations history and information about clients
  * @author nile
  */
 public class DocumentEditor {

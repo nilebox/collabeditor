@@ -5,6 +5,10 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+/**
+ * Login controller
+ * @author nile
+ */
 @Controller
 public class LoginController {
 	@RequestMapping(value = "/login.html", method = RequestMethod.GET)

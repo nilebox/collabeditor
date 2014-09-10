@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 import ru.nilebox.collabedit.model.Document;
 
 /**
- *
+ * JPA repository for working with document storage
  * @author nile
  */
 @Repository

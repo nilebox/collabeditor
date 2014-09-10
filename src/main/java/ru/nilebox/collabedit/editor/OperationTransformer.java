@@ -9,11 +9,15 @@ import java.util.Iterator;
 import ru.nilebox.collabedit.util.Pair;
 
 /**
- *
+ * Implementation of operational transformation algorithm
+ * More details about idea of the algorithm: http://www.codecommit.com/blog/java/understanding-and-applying-operational-transformation
  * @author nile
  */
 public class OperationTransformer {
 
+	/**
+	 * Make transformations of two batches to get transformed presentation of each other
+	 */
 	public static Pair<OperationBatch> transformBatches(OperationBatch first, OperationBatch second) throws TransformationException {
 		OperationBatch firstTransformed = new OperationBatch();
 		OperationBatch secondTransformed = new OperationBatch();
@@ -62,6 +66,9 @@ public class OperationTransformer {
 		return new Pair<OperationBatch>(firstTransformed, secondTransformed);
 	}
 
+	/**
+	 * Split two operations to pairs of same length
+	 */
 	private static Pair<Pair<Operation>> splitOperations(Operation first, Operation second) {
 		if (first instanceof InsertOperation) {
 			return new Pair<Pair<Operation>>(
@@ -78,6 +85,9 @@ public class OperationTransformer {
 		}
 	}
 
+	/*
+	 * Transform operations against each other
+	 */
 	private static Pair<Operation> transformOperations(Operation first, Operation second) {
 		// insert, nothing -> insert, retain
 		if (first instanceof InsertOperation) {

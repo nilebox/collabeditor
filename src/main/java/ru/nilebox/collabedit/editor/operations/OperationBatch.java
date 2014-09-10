@@ -6,7 +6,7 @@ import ru.nilebox.collabedit.messages.DocumentChangeRequest;
 import ru.nilebox.collabedit.messages.OperationContainer;
 
 /**
- *
+ * Batch of operations (single unit of text editing)
  * @author nile
  */
 public class OperationBatch extends ArrayList<Operation> {

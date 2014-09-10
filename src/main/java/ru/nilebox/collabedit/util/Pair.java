@@ -1,7 +1,7 @@
 package ru.nilebox.collabedit.util;
 
 /**
- *
+ * Utility class to hold pair of two same-type objects
  * @author nile
  */
 public class Pair<T> {

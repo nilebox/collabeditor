@@ -1,7 +1,7 @@
 package ru.nilebox.collabedit.messages;
 
 /**
- *
+ * CaretUpdate message format
  * @author nile
  */
 public class CaretUpdate {

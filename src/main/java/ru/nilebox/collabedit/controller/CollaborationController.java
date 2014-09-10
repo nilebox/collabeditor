@@ -18,7 +18,7 @@ import ru.nilebox.collabedit.messages.DocumentChangeNotification;
 import ru.nilebox.collabedit.messages.DocumentChangeRequest;
 
 /**
- *
+ * Server-side implementation of client-server interaction protocol
  * @author nile
  */
 @Controller

@@ -1,7 +1,7 @@
 package ru.nilebox.collabedit.messages;
 
 /**
- *
+ * Client information message format
  * @author nile
  */
 public class ClientMessage {

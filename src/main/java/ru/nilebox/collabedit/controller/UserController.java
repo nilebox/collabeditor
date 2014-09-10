@@ -23,7 +23,7 @@ import ru.nilebox.collabedit.dao.UserRepository;
 import ru.nilebox.collabedit.model.User;
 
 /**
- *
+ * Controller for creating and editing users
  * @author nile
  */
 @Controller

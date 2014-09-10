@@ -10,6 +10,10 @@ import org.springframework.stereotype.Service;
 import ru.nilebox.collabedit.dao.UserRepository;
 import ru.nilebox.collabedit.model.User;
 
+/**
+ * Implementation of UserDetailsService for UserRepository
+ * @author nile
+ */
 @Service
 public class CollabEditUserDetailsService implements UserDetailsService {
 	private String username;
