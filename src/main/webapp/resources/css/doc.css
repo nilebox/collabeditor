@@ -38,7 +38,7 @@
 	outline: 0;
 /*	border: 1px solid;*/
 	overflow: hidden;
-    word-break: break-all;
+    word-wrap: break-word;
     padding: 5px;
 	-webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
